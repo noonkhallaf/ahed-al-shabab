@@ -1,0 +1,140 @@
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowLeft, ImageIcon, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+
+interface MediaItem {
+  id: string;
+  title: string;
+  url: string;
+  type: "image" | "video";
+  category: string | null;
+}
+
+export default function GalleryPreview() {
+  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMedia = async () => {
+      const { data } = await supabase
+        .from("media")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(6);
+      setMedia((data as MediaItem[]) || []);
+      setLoading(false);
+    };
+    fetchMedia();
+  }, []);
+
+  const getYoutubeEmbed = (url: string) => {
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+  };
+
+  return (
+    <section className="py-20 bg-gradient-to-b from-background via-muted/30 to-background">
+      <div className="container">
+        <motion.div
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h2 className="font-heading font-bold text-3xl md:text-5xl text-foreground mb-4">
+            معرض الحملة
+          </h2>
+          <div className="w-20 h-1 bg-secondary mx-auto rounded-full" />
+          <p className="text-muted-foreground mt-4 max-w-2xl mx-auto text-lg">
+            شاهد لحظات حية من فعالياتنا وأنشطتنا الميدانية حول العالم
+          </p>
+        </motion.div>
+
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-pulse text-muted-foreground">
+              جارٍ التحميل...
+            </div>
+          </div>
+        ) : media.length === 0 ? (
+          <div className="text-center py-12">
+            <ImageIcon className="mx-auto text-muted-foreground/50 mb-4" size={48} />
+            <p className="text-muted-foreground">المعرض قريباً...</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+              {media.slice(0, 6).map((item, i) => {
+                const youtubeEmbed = getYoutubeEmbed(item.url);
+                return (
+                  <motion.div
+                    key={item.id}
+                    className="glass-card rounded-xl overflow-hidden group relative"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                  >
+                    <div className="aspect-square bg-muted relative overflow-hidden">
+                      {youtubeEmbed ? (
+                        <iframe
+                          src={youtubeEmbed}
+                          className="w-full h-full"
+                          allowFullScreen
+                        />
+                      ) : item.type === "image" ? (
+                        <img
+                          src={item.url}
+                          alt={item.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      ) : (
+                        <video
+                          src={item.url}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {item.type === "video" && !youtubeEmbed && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+                          <Play
+                            className="text-white fill-white"
+                            size={48}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-heading font-bold text-foreground line-clamp-1 text-sm">
+                        {item.title}
+                      </h3>
+                      {item.category && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {item.category}
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <motion.div
+              className="flex justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <Link to="/gallery">
+                <Button size="lg" className="gap-2 text-base">
+                  شاهد المعرض الكامل
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+              </Link>
+            </motion.div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
