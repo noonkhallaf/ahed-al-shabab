@@ -1,22 +1,13 @@
 import { Link } from "react-router-dom";
-import { Phone, Mail, Facebook, Instagram, MessageCircle } from "lucide-react";
+import { Phone, Mail } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function Footer() {
   const { data: settings } = useSiteSettings();
 
-  const phone = settings?.contactPhone || "+962 7X XXX XXXX";
-  const email = settings?.contactEmail || "info@ahdalshabab.com";
-  const facebookUrl = settings?.facebookUrl || "#";
-  const instagramUrl = settings?.instagramUrl || "#";
-  const whatsappNumber = settings?.whatsappNumber || "";
-
-  const socials = [
-    { icon: Facebook, label: "فيسبوك", url: facebookUrl },
-    { icon: Instagram, label: "انستغرام", url: instagramUrl },
-    { icon: MessageCircle, label: "واتساب", url: whatsappNumber ? `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}` : "#" },
-  ];
+  const phone = settings?.contactPhone || "+970599000000";
+  const email = settings?.contactEmail || "info@ahd-shabab.ps";
 
   return (
     <footer className="bg-primary text-primary-foreground">
@@ -36,7 +27,7 @@ export default function Footer() {
                 { label: "المرشحون", href: "/candidates" },
                 { label: "البرنامج الانتخابي", href: "/program" },
                 { label: "الأخبار", href: "/news" },
-                { label: "تواصل معنا", href: "/contact" },
+                { label: "الاقتراحات", href: "/suggestions" },
               ].map((link) => (
                 <Link key={link.href} to={link.href} className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm">
                   {link.label}
@@ -50,13 +41,6 @@ export default function Footer() {
             <div className="flex flex-col gap-3 text-sm text-primary-foreground/70">
               <div className="flex items-center gap-2"><Phone size={16} /><span dir="ltr">{phone}</span></div>
               <div className="flex items-center gap-2"><Mail size={16} /><span>{email}</span></div>
-            </div>
-            <div className="flex gap-3 mt-4">
-              {socials.map(({ icon: Icon, label, url }) => (
-                <a key={label} href={url} target="_blank" rel="noopener" aria-label={label} className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors">
-                  <Icon size={18} />
-                </a>
-              ))}
             </div>
           </div>
         </div>

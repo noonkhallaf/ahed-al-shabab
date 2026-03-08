@@ -10,10 +10,10 @@ import CandidatesPage from "./pages/CandidatesPage";
 import CandidateDetailPage from "./pages/CandidateDetailPage";
 import ProgramPage from "./pages/ProgramPage";
 import NewsPage from "./pages/NewsPage";
+import NewsDetailPage from "./pages/NewsDetailPage";
 import GalleryPage from "./pages/GalleryPage";
 import PollPage from "./pages/PollPage";
 import SuggestionsPage from "./pages/SuggestionsPage";
-import ContactPage from "./pages/ContactPage";
 import NotFound from "./pages/NotFound";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -50,10 +50,10 @@ function AppContent() {
            <Route path="/candidates/:id" element={<CandidateDetailPage />} />
            <Route path="/program" element={<ProgramPage />} />
            <Route path="/news" element={<NewsPage />} />
+           <Route path="/news/:id" element={<NewsDetailPage />} />
            <Route path="/gallery" element={<GalleryPage />} />
            <Route path="/poll" element={<PollPage />} />
            <Route path="/suggestions" element={<SuggestionsPage />} />
-           <Route path="/contact" element={<ContactPage />} />
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />

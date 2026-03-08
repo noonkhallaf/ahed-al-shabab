@@ -258,24 +258,30 @@ export type Database = {
       }
       suggestions: {
         Row: {
+          admin_reply: string | null
           created_at: string
           id: string
+          is_approved: boolean
           is_read: boolean
           message: string
           name: string | null
           phone: string | null
         }
         Insert: {
+          admin_reply?: string | null
           created_at?: string
           id?: string
+          is_approved?: boolean
           is_read?: boolean
           message: string
           name?: string | null
           phone?: string | null
         }
         Update: {
+          admin_reply?: string | null
           created_at?: string
           id?: string
+          is_approved?: boolean
           is_read?: boolean
           message?: string
           name?: string | null

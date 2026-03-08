@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
-const ELECTION_DATE = new Date("2026-05-15T08:00:00");
-
-function getTimeLeft() {
+function getTimeLeft(targetDate: Date) {
   const now = new Date();
-  const diff = ELECTION_DATE.getTime() - now.getTime();
+  const diff = targetDate.getTime() - now.getTime();
   if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -16,12 +15,19 @@ function getTimeLeft() {
 }
 
 export default function CountdownSection() {
-  const [time, setTime] = useState(getTimeLeft());
+  const { data: settings } = useSiteSettings();
+  const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  const showCountdown = settings?.countdownVisible !== 'false';
+  const electionDate = new Date(settings?.countdownDate || '2026-05-15T08:00:00');
 
   useEffect(() => {
-    const interval = setInterval(() => setTime(getTimeLeft()), 1000);
+    setTime(getTimeLeft(electionDate));
+    const interval = setInterval(() => setTime(getTimeLeft(electionDate)), 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [settings?.countdownDate]);
+
+  if (!showCountdown) return null;
 
   const units = [
     { label: "يوم", value: time.days },
