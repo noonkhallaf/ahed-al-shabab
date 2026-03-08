@@ -34,6 +34,7 @@ const queryClient = new QueryClient();
 function AppContent() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+  usePageTracking();
 
   return (
     <>
