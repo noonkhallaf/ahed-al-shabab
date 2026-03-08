@@ -45,14 +45,15 @@ function AppContent() {
       <main>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/candidates" element={<CandidatesPage />} />
-          <Route path="/candidates/:id" element={<CandidateDetailPage />} />
-          <Route path="/program" element={<ProgramPage />} />
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/poll" element={<PollPage />} />
-          <Route path="/suggestions" element={<SuggestionsPage />} />
-          <Route path="/contact" element={<ContactPage />} />
+           <Route path="/" element={<Index />} />
+           <Route path="/candidates" element={<CandidatesPage />} />
+           <Route path="/candidates/:id" element={<CandidateDetailPage />} />
+           <Route path="/program" element={<ProgramPage />} />
+           <Route path="/news" element={<NewsPage />} />
+           <Route path="/gallery" element={<GalleryPage />} />
+           <Route path="/poll" element={<PollPage />} />
+           <Route path="/suggestions" element={<SuggestionsPage />} />
+           <Route path="/contact" element={<ContactPage />} />
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
