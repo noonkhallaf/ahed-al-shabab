@@ -50,10 +50,10 @@ function AppContent() {
            <Route path="/candidates/:id" element={<CandidateDetailPage />} />
            <Route path="/program" element={<ProgramPage />} />
            <Route path="/news" element={<NewsPage />} />
+           <Route path="/news/:id" element={<NewsDetailPage />} />
            <Route path="/gallery" element={<GalleryPage />} />
            <Route path="/poll" element={<PollPage />} />
            <Route path="/suggestions" element={<SuggestionsPage />} />
-           <Route path="/contact" element={<ContactPage />} />
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
