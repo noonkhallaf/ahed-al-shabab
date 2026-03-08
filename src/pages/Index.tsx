@@ -22,6 +22,7 @@ const Index = () => {
       <ProgramPreview />
       <CountdownSection />
       <NewsPreview />
+      <GalleryPreview />
       <PollSection />
       <TestimonialsSection />
       <JoinSection />
