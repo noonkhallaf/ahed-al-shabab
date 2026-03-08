@@ -8,6 +8,8 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
 
 interface Message {
   id: string;
@@ -24,6 +26,8 @@ export default function AdminMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [replyDialog, setReplyDialog] = useState<{ open: boolean; msg: Message | null }>({ open: false, msg: null });
   const [replyText, setReplyText] = useState('');
+  const [whatsappDialog, setWhatsappDialog] = useState<{ open: boolean; msg: Message | null }>({ open: false, msg: null });
+  const [countryCode, setCountryCode] = useState('+970');
 
   const fetchMessages = async () => {
     const { data } = await supabase.from('suggestions').select('*').order('created_at', { ascending: false });
@@ -51,7 +55,14 @@ export default function AdminMessages() {
     }
   };
 
-  const sendWhatsAppApproval = (msg: Message) => {
+  const openWhatsAppDialog = (msg: Message) => {
+    setWhatsappDialog({ open: true, msg });
+    setCountryCode('+970');
+  };
+
+  const sendWhatsApp = () => {
+    const msg = whatsappDialog.msg;
+    if (!msg) return;
     const siteUrl = window.location.origin;
     const text = encodeURIComponent(
       `مرحبًا ${msg.name || 'صديقنا العزيز'} 🌟\n\n` +
@@ -61,8 +72,13 @@ export default function AdminMessages() {
       `شكرًا لمساهمتك في بناء مستقبل أفضل لمدينتنا! 🙏\n` +
       `- فريق قائمة عهد الشباب`
     );
-    const phone = (msg.phone || '').replace(/[^0-9]/g, '');
-    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
+    // Remove any existing country code/prefix and non-digits
+    let phone = (msg.phone || '').replace(/[^0-9]/g, '');
+    // Remove leading 0 if present
+    if (phone.startsWith('0')) phone = phone.substring(1);
+    const code = countryCode.replace('+', '');
+    window.open(`https://wa.me/${code}${phone}?text=${text}`, '_blank');
+    setWhatsappDialog({ open: false, msg: null });
   };
 
   const handleReply = async () => {
@@ -123,7 +139,7 @@ export default function AdminMessages() {
                     <div className="flex items-center gap-1">
                       <span>{m.phone || '-'}</span>
                       {m.phone && (
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); sendWhatsAppApproval(m); }} title="إرسال إشعار واتساب">
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={(e) => { e.stopPropagation(); openWhatsAppDialog(m); }} title="إرسال إشعار واتساب">
                           <Send className="h-3.5 w-3.5 text-green-600" />
                         </Button>
                       )}
@@ -159,6 +175,41 @@ export default function AdminMessages() {
         </div></CardContent></Card>
       )}
 
+      {/* WhatsApp country code dialog */}
+      <Dialog open={whatsappDialog.open} onOpenChange={(open) => { if (!open) setWhatsappDialog({ open: false, msg: null }); }}>
+        <DialogContent dir="rtl">
+          <DialogHeader>
+            <DialogTitle>اختر مقدمة الرقم للتواصل عبر واتساب</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="p-3 bg-muted rounded-lg text-sm">
+              <p><strong>الرقم:</strong> {whatsappDialog.msg?.phone}</p>
+              <p><strong>الاسم:</strong> {whatsappDialog.msg?.name || 'مجهول'}</p>
+            </div>
+            <div className="space-y-2">
+              <Label>مقدمة الدولة</Label>
+              <Select value={countryCode} onValueChange={setCountryCode}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="+970">🇵🇸 فلسطين (+970)</SelectItem>
+                  <SelectItem value="+972">🇮🇱 إسرائيل (+972)</SelectItem>
+                  <SelectItem value="+962">🇯🇴 الأردن (+962)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setWhatsappDialog({ open: false, msg: null })}>إلغاء</Button>
+            <Button onClick={sendWhatsApp} className="bg-green-600 hover:bg-green-700">
+              <Send className="h-4 w-4 ml-2" />فتح واتساب
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reply dialog */}
       <Dialog open={replyDialog.open} onOpenChange={(open) => { if (!open) setReplyDialog({ open: false, msg: null }); }}>
         <DialogContent>
           <DialogHeader>

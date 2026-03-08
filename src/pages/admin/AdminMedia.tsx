@@ -26,14 +26,14 @@ export default function AdminMedia() {
     setUploading(true);
 
     for (const file of Array.from(files)) {
-      if (file.size > 10 * 1024 * 1024) { toast({ title: `${file.name} كبير جدًا`, variant: 'destructive' }); continue; }
+      if (file.size > 10 * 1024 * 1024) { toast({ title: `الملف كبير جدًا`, variant: 'destructive' }); continue; }
       const ext = file.name.split('.').pop();
       const fileName = `gallery/${Date.now()}_${Math.random().toString(36).substring(2)}.${ext}`;
       const { error } = await supabase.storage.from('media').upload(fileName, file);
-      if (error) { toast({ title: `فشل رفع ${file.name}`, variant: 'destructive' }); continue; }
+      if (error) { toast({ title: `فشل الرفع`, variant: 'destructive' }); continue; }
       const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
       const type = file.type.startsWith('video') ? 'video' : 'image';
-      await supabase.from('media').insert({ title: file.name, url: publicUrl, type, category: 'عام' });
+      await supabase.from('media').insert({ title: fileName, url: publicUrl, type, category: 'عام' });
     }
 
     setUploading(false);
@@ -44,7 +44,6 @@ export default function AdminMedia() {
 
   const handleDelete = async (item: MediaItem) => {
     if (!confirm('حذف هذا الملف؟')) return;
-    // Extract path from URL
     const urlParts = item.url.split('/media/');
     if (urlParts[1]) {
       await supabase.storage.from('media').remove([urlParts[1]]);
@@ -90,11 +89,11 @@ export default function AdminMedia() {
                 {item.type === 'video' ? (
                   <video src={item.url} className="w-full h-full object-cover" />
                 ) : (
-                  <img src={item.url} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={item.url} alt="" className="w-full h-full object-cover" />
                 )}
               </div>
               <CardContent className="p-3">
-                <p className="text-xs font-medium truncate">{item.title}</p>
+                <p className="text-xs text-muted-foreground">{item.type === 'image' ? 'صورة' : 'فيديو'}</p>
                 <div className="flex gap-1 mt-2">
                   <Button variant="ghost" size="sm" onClick={() => copyUrl(item.id, item.url)}>
                     {copiedId === item.id ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3" />}

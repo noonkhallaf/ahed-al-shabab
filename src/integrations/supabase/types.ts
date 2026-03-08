@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          password_hash: string
+          role: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          password_hash: string
+          role?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          password_hash?: string
+          role?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      audit_log: {
+        Row: {
+          action: string
+          admin_username: string
+          created_at: string
+          details: string | null
+          id: string
+        }
+        Insert: {
+          action: string
+          admin_username: string
+          created_at?: string
+          details?: string | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          admin_username?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       candidates: {
         Row: {
           achievements: string[]

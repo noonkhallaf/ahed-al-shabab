@@ -13,7 +13,7 @@ const SETTINGS_KEYS = [
   'heroTitle', 'heroSubtitle', 'duraText', 'campaignVideo',
   'contactPhone', 'contactEmail',
   'countdownDate', 'countdownVisible',
-  'suggestionsBoost',
+  'suggestionsBoost', 'visitorBoost', 'supporterBoost',
 ];
 
 const defaults: Record<string, string> = {
@@ -26,6 +26,8 @@ const defaults: Record<string, string> = {
   countdownDate: '2026-05-15T08:00:00',
   countdownVisible: 'true',
   suggestionsBoost: '847',
+  visitorBoost: '12450',
+  supporterBoost: '4800',
 };
 
 export default function AdminHomepage() {
@@ -113,11 +115,22 @@ export default function AdminHomepage() {
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>الأرقام الترويجية (الاقتراحات)</CardTitle></CardHeader>
+        <CardHeader><CardTitle>الأرقام الترويجية</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>رقم المشاركات الوهمي (يُضاف للعدد الحقيقي في صفحة الاقتراحات)</Label>
-            <Input type="number" value={data.suggestionsBoost} onChange={e => update('suggestionsBoost', e.target.value)} />
+          <div className="text-sm text-muted-foreground mb-4">هذه الأرقام تظهر للزوار العاديين لتعزيز الثقة. الإحصائيات الحقيقية متاحة في لوحة التحكم.</div>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label>الزوار الوهميين</Label>
+              <Input type="number" value={data.visitorBoost} onChange={e => update('visitorBoost', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>الداعمين الوهميين</Label>
+              <Input type="number" value={data.supporterBoost} onChange={e => update('supporterBoost', e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label>إضافة للاقتراحات الحقيقية</Label>
+              <Input type="number" value={data.suggestionsBoost} onChange={e => update('suggestionsBoost', e.target.value)} />
+            </div>
           </div>
         </CardContent>
       </Card>

@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Newspaper, MessageSquare, Vote, Eye, TrendingUp, Globe, Calendar } from 'lucide-react';
+import { Users, Newspaper, MessageSquare, Vote, Eye, Globe, Calendar } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { candidatesData } from '@/data/candidates';
 
 export default function AdminDashboard() {
+  const [candidatesCount, setCandidatesCount] = useState(0);
   const [newsCount, setNewsCount] = useState(0);
   const [messagesCount, setMessagesCount] = useState(0);
   const [pollsCount, setPollsCount] = useState(0);
@@ -15,7 +15,8 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     (async () => {
-      const [news, messages, polls, views, today, unread, events] = await Promise.all([
+      const [candidates, news, messages, polls, views, today, unread, events] = await Promise.all([
+        supabase.from('candidates').select('*', { count: 'exact', head: true }),
         supabase.from('news').select('*', { count: 'exact', head: true }),
         supabase.from('suggestions').select('*', { count: 'exact', head: true }),
         supabase.from('polls').select('*', { count: 'exact', head: true }),
@@ -24,6 +25,7 @@ export default function AdminDashboard() {
         supabase.from('suggestions').select('*', { count: 'exact', head: true }).eq('is_read', false),
         supabase.from('events').select('*', { count: 'exact', head: true }),
       ]);
+      setCandidatesCount(candidates.count || 0);
       setNewsCount(news.count || 0);
       setMessagesCount(messages.count || 0);
       setPollsCount(polls.count || 0);
@@ -35,7 +37,7 @@ export default function AdminDashboard() {
   }, []);
 
   const stats = [
-    { title: 'المرشحين', value: candidatesData.length, icon: Users, color: 'text-primary' },
+    { title: 'المرشحين', value: candidatesCount, icon: Users, color: 'text-primary' },
     { title: 'الأخبار', value: newsCount, icon: Newspaper, color: 'text-secondary' },
     { title: 'الرسائل', value: `${messagesCount} (${unreadMessages} جديدة)`, icon: MessageSquare, color: 'text-destructive' },
     { title: 'الاستطلاعات', value: pollsCount, icon: Vote, color: 'text-primary' },
@@ -75,7 +77,7 @@ export default function AdminDashboard() {
         <Card>
           <CardHeader><CardTitle className="text-lg">نشاط الحملة</CardTitle></CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">الحملة تسير بشكل ممتاز - {totalViews.toLocaleString('ar')} زيارة حتى الآن</p>
+            <p className="text-muted-foreground text-sm">الحملة تسير بشكل ممتاز - {totalViews.toLocaleString('ar')} زيارة حقيقية حتى الآن</p>
           </CardContent>
         </Card>
       </div>
