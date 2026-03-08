@@ -14,14 +14,18 @@ export default function HeroSection() {
 
       <div className="container relative z-10 py-32 md:py-40">
         <div className="flex flex-col items-center text-center gap-8">
-          <motion.img
-            src={logo}
-            alt="شعار قائمة عهد الشباب"
-            className="h-32 md:h-44 w-auto drop-shadow-2xl"
+          <motion.div
+            className="bg-primary-foreground/95 rounded-2xl p-4 md:p-6 shadow-2xl"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7 }}
-          />
+          >
+            <img
+              src={logo}
+              alt="شعار قائمة عهد الشباب"
+              className="h-28 md:h-40 w-auto"
+            />
+          </motion.div>
 
           <motion.h1
             className="font-heading font-bold text-3xl md:text-5xl lg:text-6xl text-primary-foreground leading-tight max-w-4xl"
@@ -39,7 +43,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            نحن فريق من الشباب الطموح الذي يسعى لخدمة المجتمع وتحقيق تطلعات الجيل الجديد من خلال العمل الجاد والرؤية الواضحة.
+            نحن فريق من شباب مدينة دورا الطموح، نسعى لخدمة المجتمع وتحقيق تطلعات أبناء المدينة من خلال العمل الجاد والرؤية الواضحة.
           </motion.p>
 
           <motion.div
