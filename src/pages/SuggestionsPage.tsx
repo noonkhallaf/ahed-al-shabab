@@ -1,14 +1,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, CheckCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 export default function SuggestionsPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (!form.message.trim() || !form.phone.trim()) return;
+    setLoading(true);
+    const { error } = await supabase.from('suggestions').insert({
+      name: form.name || null,
+      phone: form.phone,
+      message: form.message,
+    });
+    setLoading(false);
+    if (error) {
+      toast({ title: 'حدث خطأ، حاول مرة أخرى', variant: 'destructive' });
+    } else {
+      setSubmitted(true);
+    }
   };
 
   return (
@@ -27,51 +42,22 @@ export default function SuggestionsPage() {
             <p className="text-muted-foreground">شكرًا لمشاركتكم. سنأخذ اقتراحكم بعين الاعتبار.</p>
           </motion.div>
         ) : (
-          <motion.form
-            onSubmit={handleSubmit}
-            className="glass-card rounded-xl p-8 space-y-5"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+          <motion.form onSubmit={handleSubmit} className="glass-card rounded-xl p-8 space-y-5" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">الاسم (اختياري)</label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full p-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all"
-                placeholder="أدخل اسمك"
-              />
+              <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full p-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all" placeholder="أدخل اسمك" />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">رقم الهاتف</label>
-              <input
-                type="tel"
-                required
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full p-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all"
-                placeholder="07X XXX XXXX"
-                dir="ltr"
-              />
+              <input type="tel" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="w-full p-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all" placeholder="07X XXX XXXX" dir="ltr" />
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">الرسالة</label>
-              <textarea
-                required
-                rows={5}
-                value={form.message}
-                onChange={(e) => setForm({ ...form, message: e.target.value })}
-                className="w-full p-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all resize-none"
-                placeholder="اكتب اقتراحك أو ملاحظتك هنا..."
-              />
+              <textarea required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="w-full p-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-secondary/50 focus:border-secondary outline-none transition-all resize-none" placeholder="اكتب اقتراحك أو ملاحظتك هنا..." />
             </div>
-            <button
-              type="submit"
-              className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-heading font-bold hover:brightness-110 transition-all flex items-center justify-center gap-2"
-            >
+            <button type="submit" disabled={loading} className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-heading font-bold hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50">
               <Send size={18} />
-              إرسال الاقتراح
+              {loading ? 'جارٍ الإرسال...' : 'إرسال الاقتراح'}
             </button>
           </motion.form>
         )}

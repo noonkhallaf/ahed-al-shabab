@@ -4,18 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Pencil, Trash2, BarChart3 } from 'lucide-react';
+import { Plus, Pencil, Trash2, BarChart3, Printer } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
-interface PollOption { label: string; votes: number; }
-interface Poll { id: number; question: string; options: PollOption[]; active: boolean; }
-
-const STORAGE_KEY = 'admin_polls';
-const defaultPolls: Poll[] = [
-  { id: 1, question: 'ما رأيك في برنامج قائمة عهد الشباب؟', options: [{ label: 'ممتاز', votes: 45 }, { label: 'جيد', votes: 23 }, { label: 'يحتاج تطوير', votes: 8 }], active: true },
-  { id: 2, question: 'هل تؤيد برنامج قائمة عهد الشباب؟', options: [{ label: 'نعم', votes: 67 }, { label: 'ربما', votes: 15 }, { label: 'لا', votes: 5 }], active: true },
-];
+interface PollOption { id: string; poll_id: string; option_text: string; votes: number; }
+interface Poll { id: string; question: string; is_active: boolean; options: PollOption[]; }
 
 export default function AdminPolls() {
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -23,18 +18,22 @@ export default function AdminPolls() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newOptions, setNewOptions] = useState<string[]>(['', '', '']);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) setPolls(JSON.parse(stored));
-    else { setPolls(defaultPolls); localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPolls)); }
-  }, []);
+  const fetchPolls = async () => {
+    const { data: pollsData } = await supabase.from('polls').select('*').order('created_at', { ascending: false });
+    const { data: optionsData } = await supabase.from('poll_options').select('*');
+    const mapped = ((pollsData as any[]) || []).map(p => ({
+      ...p,
+      options: ((optionsData as any[]) || []).filter(o => o.poll_id === p.id),
+    }));
+    setPolls(mapped);
+  };
 
-  const save = (list: Poll[]) => { setPolls(list); localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); };
+  useEffect(() => { fetchPolls(); }, []);
 
   const openNew = () => { setEditing(null); setNewOptions(['', '', '']); setDialogOpen(true); };
-  const openEdit = (p: Poll) => { setEditing(p); setNewOptions(p.options.map(o => o.label)); setDialogOpen(true); };
+  const openEdit = (p: Poll) => { setEditing(p); setNewOptions(p.options.map(o => o.option_text)); setDialogOpen(true); };
 
-  const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const question = fd.get('question') as string;
@@ -42,28 +41,50 @@ export default function AdminPolls() {
     if (opts.length < 2) { toast({ title: 'يجب إضافة خيارين على الأقل', variant: 'destructive' }); return; }
 
     if (editing) {
-      const updated: Poll = { ...editing, question, options: opts.map(label => {
-        const existing = editing.options.find(o => o.label === label);
-        return { label, votes: existing?.votes || 0 };
-      })};
-      save(polls.map(p => p.id === editing.id ? updated : p));
+      await supabase.from('polls').update({ question }).eq('id', editing.id);
+      await supabase.from('poll_options').delete().eq('poll_id', editing.id);
+      await supabase.from('poll_options').insert(opts.map(text => {
+        const existing = editing.options.find(o => o.option_text === text);
+        return { poll_id: editing.id, option_text: text, votes: existing?.votes || 0 };
+      }));
       toast({ title: 'تم التعديل' });
     } else {
-      save([...polls, { id: Date.now(), question, options: opts.map(label => ({ label, votes: 0 })), active: true }]);
+      const { data: newPoll } = await supabase.from('polls').insert({ question, is_active: true }).select().single();
+      if (newPoll) {
+        await supabase.from('poll_options').insert(opts.map(text => ({ poll_id: (newPoll as any).id, option_text: text, votes: 0 })));
+      }
       toast({ title: 'تمت الإضافة' });
     }
-    setDialogOpen(false);
+    setDialogOpen(false); fetchPolls();
   };
 
-  const handleDelete = (id: number) => { if (confirm('حذف؟')) { save(polls.filter(p => p.id !== id)); } };
+  const handleDelete = async (id: string) => {
+    if (confirm('حذف؟')) { await supabase.from('polls').delete().eq('id', id); fetchPolls(); }
+  };
+
+  const handlePrint = () => {
+    const printContent = `
+      <html dir="rtl"><head><title>تقرير الاستطلاعات</title>
+      <style>body{font-family:sans-serif;padding:20px}h1{text-align:center}.poll{margin:20px 0;border:1px solid #ddd;padding:15px;border-radius:8px}.bar{height:20px;background:#3b82f6;border-radius:4px;margin:4px 0}</style></head>
+      <body><h1>تقرير استطلاعات الرأي - قائمة عهد الشباب</h1><p>التاريخ: ${new Date().toLocaleDateString('ar')}</p>
+      ${polls.map(p => {
+        const total = p.options.reduce((s, o) => s + o.votes, 0);
+        return `<div class="poll"><h3>${p.question}</h3><p>إجمالي الأصوات: ${total}</p>
+        ${p.options.map(o => `<p>${o.option_text}: ${o.votes} صوت (${total ? Math.round(o.votes/total*100) : 0}%)</p><div class="bar" style="width:${total ? (o.votes/total*100) : 0}%"></div>`).join('')}</div>`;
+      }).join('')}
+      </body></html>`;
+    const w = window.open('', '_blank'); w?.document.write(printContent); w?.document.close(); w?.print();
+  };
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-xl font-heading font-bold">استطلاعات الرأي ({polls.length})</h2>
-        <Button onClick={openNew}><Plus className="h-4 w-4 ml-2" />إضافة استطلاع</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handlePrint}><Printer className="h-4 w-4 ml-2" />طباعة</Button>
+          <Button onClick={openNew}><Plus className="h-4 w-4 ml-2" />إضافة استطلاع</Button>
+        </div>
       </div>
-
       <div className="grid md:grid-cols-2 gap-4">
         {polls.map(p => {
           const totalVotes = p.options.reduce((s, o) => s + o.votes, 0);
@@ -79,10 +100,10 @@ export default function AdminPolls() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                {p.options.map((o, i) => (
-                  <div key={i} className="space-y-1">
+                {p.options.map(o => (
+                  <div key={o.id} className="space-y-1">
                     <div className="flex justify-between text-sm">
-                      <span>{o.label}</span>
+                      <span>{o.option_text}</span>
                       <span className="text-muted-foreground">{o.votes} صوت ({totalVotes ? Math.round(o.votes / totalVotes * 100) : 0}%)</span>
                     </div>
                     <Progress value={totalVotes ? (o.votes / totalVotes) * 100 : 0} />
@@ -94,7 +115,6 @@ export default function AdminPolls() {
           );
         })}
       </div>
-
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent dir="rtl">
           <DialogHeader><DialogTitle>{editing ? 'تعديل استطلاع' : 'إضافة استطلاع جديد'}</DialogTitle></DialogHeader>
