@@ -10,6 +10,7 @@ import CandidatesPage from "./pages/CandidatesPage";
 import CandidateDetailPage from "./pages/CandidateDetailPage";
 import ProgramPage from "./pages/ProgramPage";
 import NewsPage from "./pages/NewsPage";
+import NewsDetailPage from "./pages/NewsDetailPage";
 import GalleryPage from "./pages/GalleryPage";
 import PollPage from "./pages/PollPage";
 import SuggestionsPage from "./pages/SuggestionsPage";
