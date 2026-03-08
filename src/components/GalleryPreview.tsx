@@ -132,7 +132,7 @@ export default function GalleryPreview() {
             </Carousel>
 
             <motion.div
-              className="flex justify-center"
+              className="flex justify-center mt-12"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
