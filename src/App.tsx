@@ -66,6 +66,7 @@ function AppContent() {
             <Route path="polls" element={<AdminPolls />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="stats" element={<AdminStats />} />
+            <Route path="events" element={<AdminEvents />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 

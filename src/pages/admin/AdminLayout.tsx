@@ -23,6 +23,7 @@ const menuItems = [
   { title: 'مكتبة الصور', url: '/admin/media', icon: Image },
   { title: 'الفيديوهات', url: '/admin/videos', icon: Video },
   { title: 'استطلاعات الرأي', url: '/admin/polls', icon: Vote },
+  { title: 'الفعاليات', url: '/admin/events', icon: Calendar },
   { title: 'الرسائل والاقتراحات', url: '/admin/messages', icon: MessageSquare },
   { title: 'الإحصائيات', url: '/admin/stats', icon: BarChart3 },
   { title: 'الإعدادات', url: '/admin/settings', icon: Settings },
