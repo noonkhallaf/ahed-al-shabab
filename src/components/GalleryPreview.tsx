@@ -11,7 +11,7 @@ interface MediaItem {
   id: string;
   title: string;
   url: string;
-  type: "image" | "video";
+  type: string;
   category: string | null;
 }
 
@@ -34,7 +34,7 @@ export default function GalleryPreview() {
 
   const getYoutubeEmbed = (url: string) => {
     const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-    return match ? `https://www.youtube.com/embed/${match[1]}` : null;
+    return match ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1` : null;
   };
 
   return (
@@ -43,7 +43,8 @@ export default function GalleryPreview() {
         <motion.div
           className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
         >
           <h2 className="font-heading font-bold text-3xl md:text-5xl text-foreground mb-4">
             معرض الحملة
@@ -72,38 +73,37 @@ export default function GalleryPreview() {
             >
               <CarouselContent className="-ml-2 md:-ml-4">
                 {media.map((item, i) => {
-                  const youtubeEmbed = getYoutubeEmbed(item.url);
+                  const youtubeEmbed = item.type === 'video' ? getYoutubeEmbed(item.url) : null;
+                  const isImage = item.type === 'image';
+                  const isDirectVideo = item.type === 'video' && !youtubeEmbed;
                   return (
                     <CarouselItem key={item.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                       <motion.div
                         className="glass-card rounded-xl overflow-hidden group relative h-full"
                         initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
                         transition={{ delay: i * 0.08 }}
                       >
                         <div className="aspect-square bg-muted relative overflow-hidden">
                           {youtubeEmbed ? (
-                            <iframe src={youtubeEmbed} className="w-full h-full" allowFullScreen />
-                          ) : item.type === "image" ? (
+                            <iframe src={youtubeEmbed} className="w-full h-full" allowFullScreen allow="autoplay; encrypted-media" />
+                          ) : isImage ? (
                             <img
                               src={item.url}
                               alt=""
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
+                          ) : isDirectVideo ? (
+                            <video src={item.url} className="w-full h-full object-cover" autoPlay muted loop playsInline />
                           ) : (
-                            <video src={item.url} className="w-full h-full object-cover" />
-                          )}
-                          {item.type === "video" && !youtubeEmbed && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
-                              <Play className="text-white fill-white" size={48} />
-                            </div>
+                            <img
+                              src={item.url}
+                              alt=""
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            />
                           )}
                         </div>
-                        {item.category && (
-                          <div className="p-3">
-                            <p className="text-xs text-muted-foreground">{item.category}</p>
-                          </div>
-                        )}
                       </motion.div>
                     </CarouselItem>
                   );
@@ -114,7 +114,8 @@ export default function GalleryPreview() {
             <motion.div
               className="flex justify-center mt-12"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ delay: 0.6 }}
             >
               <Link to="/gallery">

@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Pencil, Trash2, BarChart3, Printer } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Plus, Pencil, Trash2, Printer } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,6 +17,8 @@ export default function AdminPolls() {
   const [editing, setEditing] = useState<Poll | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [newOptions, setNewOptions] = useState<string[]>(['', '', '']);
+  const [votesDialog, setVotesDialog] = useState<{ open: boolean; option: PollOption | null }>({ open: false, option: null });
+  const [editVotes, setEditVotes] = useState(0);
 
   const fetchPolls = async () => {
     const { data: pollsData } = await supabase.from('polls').select('*').order('created_at', { ascending: false });
@@ -62,6 +64,19 @@ export default function AdminPolls() {
     if (confirm('حذف؟')) { await supabase.from('polls').delete().eq('id', id); fetchPolls(); }
   };
 
+  const openVotesEdit = (option: PollOption) => {
+    setVotesDialog({ open: true, option });
+    setEditVotes(option.votes);
+  };
+
+  const saveVotes = async () => {
+    if (!votesDialog.option) return;
+    await supabase.from('poll_options').update({ votes: editVotes }).eq('id', votesDialog.option.id);
+    toast({ title: 'تم تعديل عدد الأصوات' });
+    setVotesDialog({ open: false, option: null });
+    fetchPolls();
+  };
+
   const handlePrint = () => {
     const printContent = `
       <html dir="rtl"><head><title>تقرير الاستطلاعات</title>
@@ -102,9 +117,11 @@ export default function AdminPolls() {
               <CardContent className="space-y-3">
                 {p.options.map(o => (
                   <div key={o.id} className="space-y-1">
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-sm items-center">
                       <span>{o.option_text}</span>
-                      <span className="text-muted-foreground">{o.votes} صوت ({totalVotes ? Math.round(o.votes / totalVotes * 100) : 0}%)</span>
+                      <Button variant="ghost" size="sm" className="h-6 text-xs px-2" onClick={() => openVotesEdit(o)}>
+                        {o.votes} صوت ({totalVotes ? Math.round(o.votes / totalVotes * 100) : 0}%) ✏️
+                      </Button>
                     </div>
                     <Progress value={totalVotes ? (o.votes / totalVotes) * 100 : 0} />
                   </div>
@@ -115,6 +132,8 @@ export default function AdminPolls() {
           );
         })}
       </div>
+
+      {/* Edit poll dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent dir="rtl">
           <DialogHeader><DialogTitle>{editing ? 'تعديل استطلاع' : 'إضافة استطلاع جديد'}</DialogTitle></DialogHeader>
@@ -135,6 +154,24 @@ export default function AdminPolls() {
               <Button type="submit">حفظ</Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit votes dialog */}
+      <Dialog open={votesDialog.open} onOpenChange={(open) => { if (!open) setVotesDialog({ open: false, option: null }); }}>
+        <DialogContent dir="rtl">
+          <DialogHeader><DialogTitle>تعديل عدد الأصوات</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">الخيار: {votesDialog.option?.option_text}</p>
+            <div className="space-y-2">
+              <Label>عدد الأصوات</Label>
+              <Input type="number" min={0} value={editVotes} onChange={e => setEditVotes(Number(e.target.value))} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setVotesDialog({ open: false, option: null })}>إلغاء</Button>
+            <Button onClick={saveVotes}>حفظ</Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
