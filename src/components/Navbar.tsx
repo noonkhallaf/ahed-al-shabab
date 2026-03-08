@@ -8,6 +8,7 @@ const navLinks = [
   { label: "المرشحون", href: "/candidates" },
   { label: "البرنامج الانتخابي", href: "/program" },
   { label: "الأخبار", href: "/news" },
+  { label: "المعرض", href: "/gallery" },
   { label: "استطلاع الرأي", href: "/poll" },
   { label: "اقتراحات", href: "/suggestions" },
   { label: "تواصل معنا", href: "/contact" },
