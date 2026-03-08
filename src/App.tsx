@@ -14,7 +14,7 @@ import NewsDetailPage from "./pages/NewsDetailPage";
 import GalleryPage from "./pages/GalleryPage";
 import PollPage from "./pages/PollPage";
 import SuggestionsPage from "./pages/SuggestionsPage";
-import ContactPage from "./pages/ContactPage";
+import NotFound from "./pages/NotFound";
 import NotFound from "./pages/NotFound";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import AdminLogin from "./pages/admin/AdminLogin";
