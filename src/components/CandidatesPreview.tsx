@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { candidatesData } from "@/data/candidates";
 import { User } from "lucide-react";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function CandidatesPreview() {
-  const preview = candidatesData.slice(0, 6);
-
   return (
     <section className="py-20 bg-background">
       <div className="container">
@@ -24,32 +24,39 @@ export default function CandidatesPreview() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {preview.map((c, i) => (
-            <motion.div
-              key={c.id}
-              className="glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <div className="h-48 bg-muted flex items-center justify-center">
-                <User className="text-muted-foreground" size={64} />
-              </div>
-              <div className="p-5">
-                <h3 className="font-heading font-bold text-lg text-foreground">{c.name}</h3>
-                <p className="text-muted-foreground text-sm mt-1">{c.specialty} • {c.age} سنة</p>
-                <Link
-                  to={`/candidates/${c.id}`}
-                  className="inline-block mt-4 text-sm font-medium text-secondary hover:underline"
+        <Carousel
+          opts={{ align: "start", loop: true }}
+          plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {candidatesData.map((c, i) => (
+              <CarouselItem key={c.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
+                <motion.div
+                  className="glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300 h-full"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
                 >
-                  عرض الملف الكامل ←
-                </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                  <div className="h-48 bg-muted flex items-center justify-center">
+                    <User className="text-muted-foreground" size={64} />
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-heading font-bold text-lg text-foreground">{c.name}</h3>
+                    <p className="text-muted-foreground text-sm mt-1">{c.specialty} • {c.age} سنة</p>
+                    <Link
+                      to={`/candidates/${c.id}`}
+                      className="inline-block mt-4 text-sm font-medium text-secondary hover:underline"
+                    >
+                      عرض الملف الكامل ←
+                    </Link>
+                  </div>
+                </motion.div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
 
         <div className="text-center mt-10">
           <Link
