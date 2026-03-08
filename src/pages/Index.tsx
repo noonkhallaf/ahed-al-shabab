@@ -8,11 +8,13 @@ import NewsPreview from "@/components/NewsPreview";
 import PollSection from "@/components/PollSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import JoinSection from "@/components/JoinSection";
+import SocialProofSection from "@/components/SocialProofSection";
 
 const Index = () => {
   return (
     <div>
       <HeroSection />
+      <SocialProofSection />
       <DuraCitySection />
       <VisionSection />
       <CandidatesPreview />
