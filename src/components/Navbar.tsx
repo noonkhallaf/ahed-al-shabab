@@ -11,7 +11,6 @@ const navLinks = [
   { label: "المعرض", href: "/gallery" },
   { label: "استطلاع الرأي", href: "/poll" },
   { label: "اقتراحات", href: "/suggestions" },
-  { label: "تواصل معنا", href: "/contact" },
 ];
 
 export default function Navbar() {
