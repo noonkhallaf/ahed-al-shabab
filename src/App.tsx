@@ -28,6 +28,8 @@ import AdminPolls from "./pages/admin/AdminPolls";
 import AdminMessages from "./pages/admin/AdminMessages";
 import AdminStats from "./pages/admin/AdminStats";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminEvents from "./pages/admin/AdminEvents";
+import { usePageTracking } from "@/hooks/usePageTracking";
 
 const queryClient = new QueryClient();
 
