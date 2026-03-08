@@ -5,6 +5,7 @@ import CandidatesPreview from "@/components/CandidatesPreview";
 import ProgramPreview from "@/components/ProgramPreview";
 import CountdownSection from "@/components/CountdownSection";
 import NewsPreview from "@/components/NewsPreview";
+import GalleryPreview from "@/components/GalleryPreview";
 import PollSection from "@/components/PollSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import JoinSection from "@/components/JoinSection";
@@ -21,6 +22,7 @@ const Index = () => {
       <ProgramPreview />
       <CountdownSection />
       <NewsPreview />
+      <GalleryPreview />
       <PollSection />
       <TestimonialsSection />
       <JoinSection />
