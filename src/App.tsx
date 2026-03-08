@@ -30,6 +30,8 @@ import AdminMessages from "./pages/admin/AdminMessages";
 import AdminStats from "./pages/admin/AdminStats";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminEvents from "./pages/admin/AdminEvents";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import { usePageTracking } from "@/hooks/usePageTracking";
 
 const queryClient = new QueryClient();
@@ -69,6 +71,8 @@ function AppContent() {
             <Route path="messages" element={<AdminMessages />} />
             <Route path="stats" element={<AdminStats />} />
             <Route path="events" element={<AdminEvents />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="audit" element={<AdminAuditLog />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
