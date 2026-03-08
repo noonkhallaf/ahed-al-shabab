@@ -1,11 +1,15 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { candidatesData } from "@/data/candidates";
 import { User, MapPin, GraduationCap, Briefcase, Award, Quote, ArrowRight, Share2 } from "lucide-react";
+import { useCandidate } from "@/hooks/useCandidates";
 
 export default function CandidateDetailPage() {
   const { id } = useParams();
-  const candidate = candidatesData.find((c) => c.id === Number(id));
+  const { data: candidate, isLoading } = useCandidate(Number(id));
+
+  if (isLoading) {
+    return <div className="pt-32 text-center min-h-screen"><p className="text-muted-foreground">جارٍ التحميل...</p></div>;
+  }
 
   if (!candidate) {
     return (
@@ -28,10 +32,13 @@ export default function CandidateDetailPage() {
         </Link>
 
         <motion.div className="glass-card rounded-2xl overflow-hidden" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          {/* Header */}
           <div className="gradient-hero p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
-            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-primary-foreground/10 border-4 border-secondary flex items-center justify-center">
-              <User className="text-primary-foreground" size={64} />
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-secondary overflow-hidden flex items-center justify-center bg-primary-foreground/10">
+              {candidate.image_url ? (
+                <img src={candidate.image_url} alt={candidate.name} className="w-full h-full object-cover" />
+              ) : (
+                <User className="text-primary-foreground" size={64} />
+              )}
             </div>
             <div className="text-center md:text-right">
               <h1 className="font-heading font-bold text-3xl md:text-4xl text-primary-foreground">{candidate.name}</h1>
@@ -45,19 +52,16 @@ export default function CandidateDetailPage() {
           </div>
 
           <div className="p-8 md:p-12 space-y-8">
-            {/* Quote */}
             <div className="bg-muted/50 rounded-xl p-6 border-r-4 border-secondary">
               <Quote className="text-secondary mb-2" size={24} />
               <p className="font-heading text-lg text-foreground italic">"{candidate.quote}"</p>
             </div>
 
-            {/* Bio */}
             <div>
               <h2 className="font-heading font-bold text-xl text-foreground mb-3">نبذة شخصية</h2>
               <p className="text-muted-foreground leading-relaxed">{candidate.bio}</p>
             </div>
 
-            {/* Experience */}
             <div>
               <h2 className="font-heading font-bold text-xl text-foreground mb-3 flex items-center gap-2">
                 <Briefcase size={20} className="text-secondary" /> الخبرات
@@ -72,7 +76,6 @@ export default function CandidateDetailPage() {
               </ul>
             </div>
 
-            {/* Achievements */}
             <div>
               <h2 className="font-heading font-bold text-xl text-foreground mb-3 flex items-center gap-2">
                 <Award size={20} className="text-secondary" /> الإنجازات
@@ -87,7 +90,6 @@ export default function CandidateDetailPage() {
               </ul>
             </div>
 
-            {/* Share */}
             <div className="border-t border-border pt-6">
               <h3 className="font-heading font-bold text-foreground mb-3 flex items-center gap-2">
                 <Share2 size={18} /> شارك هذه الصفحة

@@ -2,11 +2,16 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function HeroSection() {
+  const { data: settings } = useSiteSettings();
+
+  const title = settings?.heroTitle || "قائمة عهد الشباب";
+  const subtitle = settings?.heroSubtitle || "نحن فريق من شباب مدينة دورا الطموح، نسعى لخدمة المجتمع وتحقيق تطلعات أبناء المدينة من خلال العمل الجاد والرؤية الواضحة.";
+
   return (
     <section className="relative min-h-screen flex items-center justify-center gradient-hero overflow-hidden">
-      {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
@@ -20,11 +25,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7 }}
           >
-            <img
-              src={logo}
-              alt="شعار قائمة عهد الشباب"
-              className="h-28 md:h-40 w-auto"
-            />
+            <img src={logo} alt="شعار قائمة عهد الشباب" className="h-28 md:h-40 w-auto" />
           </motion.div>
 
           <motion.h1
@@ -33,8 +34,17 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
           >
-            قائمة عهد الشباب
-            <span className="block text-secondary mt-2">معًا نحو مستقبل أفضل</span>
+            {title.includes('–') ? (
+              <>
+                {title.split('–')[0]}
+                <span className="block text-secondary mt-2">{title.split('–')[1]}</span>
+              </>
+            ) : (
+              <>
+                قائمة عهد الشباب
+                <span className="block text-secondary mt-2">معًا نحو مستقبل أفضل</span>
+              </>
+            )}
           </motion.h1>
 
           <motion.p
@@ -43,7 +53,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            نحن فريق من شباب مدينة دورا الطموح، نسعى لخدمة المجتمع وتحقيق تطلعات أبناء المدينة من خلال العمل الجاد والرؤية الواضحة.
+            {subtitle}
           </motion.p>
 
           <motion.div
@@ -52,16 +62,10 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
           >
-            <Link
-              to="/candidates"
-              className="px-8 py-4 rounded-lg bg-secondary text-secondary-foreground font-heading font-bold text-lg hover:brightness-110 transition-all shadow-lg hover:shadow-xl"
-            >
+            <Link to="/candidates" className="px-8 py-4 rounded-lg bg-secondary text-secondary-foreground font-heading font-bold text-lg hover:brightness-110 transition-all shadow-lg hover:shadow-xl">
               تعرّف على المرشحين
             </Link>
-            <Link
-              to="/program"
-              className="px-8 py-4 rounded-lg border-2 border-primary-foreground/30 text-primary-foreground font-heading font-bold text-lg hover:bg-primary-foreground/10 transition-all"
-            >
+            <Link to="/program" className="px-8 py-4 rounded-lg border-2 border-primary-foreground/30 text-primary-foreground font-heading font-bold text-lg hover:bg-primary-foreground/10 transition-all">
               البرنامج الانتخابي
             </Link>
           </motion.div>

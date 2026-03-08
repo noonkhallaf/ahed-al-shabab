@@ -1,13 +1,27 @@
 import { Link } from "react-router-dom";
 import { Phone, Mail, Facebook, Instagram, MessageCircle } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function Footer() {
+  const { data: settings } = useSiteSettings();
+
+  const phone = settings?.contactPhone || "+962 7X XXX XXXX";
+  const email = settings?.contactEmail || "info@ahdalshabab.com";
+  const facebookUrl = settings?.facebookUrl || "#";
+  const instagramUrl = settings?.instagramUrl || "#";
+  const whatsappNumber = settings?.whatsappNumber || "";
+
+  const socials = [
+    { icon: Facebook, label: "فيسبوك", url: facebookUrl },
+    { icon: Instagram, label: "انستغرام", url: instagramUrl },
+    { icon: MessageCircle, label: "واتساب", url: whatsappNumber ? `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}` : "#" },
+  ];
+
   return (
     <footer className="bg-primary text-primary-foreground">
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Logo & About */}
           <div className="flex flex-col items-start gap-4">
             <img src={logo} alt="شعار عهد الشباب" className="h-20 w-auto" />
             <p className="text-primary-foreground/70 text-sm leading-relaxed">
@@ -15,7 +29,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 text-secondary">روابط سريعة</h3>
             <div className="flex flex-col gap-2">
@@ -25,43 +38,24 @@ export default function Footer() {
                 { label: "الأخبار", href: "/news" },
                 { label: "تواصل معنا", href: "/contact" },
               ].map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm"
-                >
+                <Link key={link.href} to={link.href} className="text-primary-foreground/70 hover:text-secondary transition-colors text-sm">
                   {link.label}
                 </Link>
               ))}
             </div>
           </div>
 
-          {/* Contact */}
           <div>
             <h3 className="font-heading font-bold text-lg mb-4 text-secondary">تواصل معنا</h3>
             <div className="flex flex-col gap-3 text-sm text-primary-foreground/70">
-              <div className="flex items-center gap-2">
-                <Phone size={16} />
-                <span dir="ltr">+962 7X XXX XXXX</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail size={16} />
-                <span>info@ahdalshabab.com</span>
-              </div>
+              <div className="flex items-center gap-2"><Phone size={16} /><span dir="ltr">{phone}</span></div>
+              <div className="flex items-center gap-2"><Mail size={16} /><span>{email}</span></div>
             </div>
             <div className="flex gap-3 mt-4">
-              {[
-                { icon: Facebook, label: "فيسبوك" },
-                { icon: Instagram, label: "انستغرام" },
-                { icon: MessageCircle, label: "واتساب" },
-              ].map(({ icon: Icon, label }) => (
-                <button
-                  key={label}
-                  aria-label={label}
-                  className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors"
-                >
+              {socials.map(({ icon: Icon, label, url }) => (
+                <a key={label} href={url} target="_blank" rel="noopener" aria-label={label} className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-secondary hover:text-secondary-foreground transition-colors">
                   <Icon size={18} />
-                </button>
+                </a>
               ))}
             </div>
           </div>
