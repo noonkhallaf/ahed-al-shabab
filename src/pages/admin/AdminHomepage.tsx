@@ -4,13 +4,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { toast } from '@/hooks/use-toast';
 import { Save, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 const SETTINGS_KEYS = [
   'heroTitle', 'heroSubtitle', 'duraText', 'campaignVideo',
-  'contactPhone', 'contactEmail', 'facebookUrl', 'instagramUrl', 'whatsappNumber',
+  'contactPhone', 'contactEmail',
+  'countdownDate', 'countdownVisible',
+  'suggestionsBoost',
 ];
 
 const defaults: Record<string, string> = {
@@ -20,9 +23,9 @@ const defaults: Record<string, string> = {
   campaignVideo: '',
   contactPhone: '+970599000000',
   contactEmail: 'info@ahd-shabab.ps',
-  facebookUrl: 'https://facebook.com',
-  instagramUrl: 'https://instagram.com',
-  whatsappNumber: '+970599000000',
+  countdownDate: '2026-05-15T08:00:00',
+  countdownVisible: 'true',
+  suggestionsBoost: '847',
 };
 
 export default function AdminHomepage() {
@@ -93,14 +96,38 @@ export default function AdminHomepage() {
       </Card>
 
       <Card>
+        <CardHeader><CardTitle>العد التنازلي</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label>إظهار العد التنازلي</Label>
+            <Switch
+              checked={data.countdownVisible !== 'false'}
+              onCheckedChange={(checked) => update('countdownVisible', checked ? 'true' : 'false')}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>تاريخ الانتخابات</Label>
+            <Input type="datetime-local" value={data.countdownDate?.replace('Z', '').substring(0, 16)} onChange={e => update('countdownDate', e.target.value)} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>الأرقام الترويجية (الاقتراحات)</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>رقم المشاركات الوهمي (يُضاف للعدد الحقيقي في صفحة الاقتراحات)</Label>
+            <Input type="number" value={data.suggestionsBoost} onChange={e => update('suggestionsBoost', e.target.value)} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardHeader><CardTitle>معلومات التواصل</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2"><Label>رقم الهاتف</Label><Input value={data.contactPhone} onChange={e => update('contactPhone', e.target.value)} /></div>
             <div className="space-y-2"><Label>البريد الإلكتروني</Label><Input value={data.contactEmail} onChange={e => update('contactEmail', e.target.value)} /></div>
-            <div className="space-y-2"><Label>فيسبوك</Label><Input value={data.facebookUrl} onChange={e => update('facebookUrl', e.target.value)} /></div>
-            <div className="space-y-2"><Label>انستغرام</Label><Input value={data.instagramUrl} onChange={e => update('instagramUrl', e.target.value)} /></div>
-            <div className="space-y-2"><Label>واتساب</Label><Input value={data.whatsappNumber} onChange={e => update('whatsappNumber', e.target.value)} /></div>
           </div>
         </CardContent>
       </Card>

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Newspaper } from "lucide-react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-interface NewsItem { id: string; title: string; content: string; category: string; published_at: string; }
+interface NewsItem { id: string; title: string; content: string; category: string; published_at: string; image_url: string | null; }
 
 export default function NewsPage() {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -28,19 +29,25 @@ export default function NewsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {news.map((n, i) => (
-              <motion.article key={n.id} className="glass-card rounded-xl overflow-hidden hover:shadow-xl transition-all" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                <div className="h-40 bg-muted flex items-center justify-center">
-                  <Newspaper className="text-muted-foreground" size={40} />
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs px-2 py-1 rounded-full bg-secondary/20 text-secondary font-medium">{n.category}</span>
-                    <span className="text-xs text-muted-foreground">{n.published_at}</span>
+              <Link to={`/news/${n.id}`} key={n.id}>
+                <motion.article className="glass-card rounded-xl overflow-hidden hover:shadow-xl transition-all h-full" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <div className="h-40 bg-muted flex items-center justify-center overflow-hidden">
+                    {n.image_url ? (
+                      <img src={n.image_url} alt={n.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <Newspaper className="text-muted-foreground" size={40} />
+                    )}
                   </div>
-                  <h3 className="font-heading font-bold text-foreground mb-2">{n.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">{n.content}</p>
-                </div>
-              </motion.article>
+                  <div className="p-5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs px-2 py-1 rounded-full bg-secondary/20 text-secondary font-medium">{n.category}</span>
+                      <span className="text-xs text-muted-foreground">{n.published_at}</span>
+                    </div>
+                    <h3 className="font-heading font-bold text-foreground mb-2">{n.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">{n.content}</p>
+                  </div>
+                </motion.article>
+              </Link>
             ))}
           </div>
         )}

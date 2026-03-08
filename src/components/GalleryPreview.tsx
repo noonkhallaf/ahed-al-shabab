@@ -50,7 +50,7 @@ export default function GalleryPreview() {
           </h2>
           <div className="w-20 h-1 bg-secondary mx-auto rounded-full" />
           <p className="text-muted-foreground mt-4 max-w-2xl mx-auto text-lg">
-            شاهد لحظات حية من فعالياتنا وأنشطتنا الميدانية حول العالم
+            شاهد لحظات حية من فعالياتنا وأنشطتنا الميدانية
           </p>
         </motion.div>
 
@@ -87,7 +87,7 @@ export default function GalleryPreview() {
                           ) : item.type === "image" ? (
                             <img
                               src={item.url}
-                              alt={item.title}
+                              alt=""
                               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                             />
                           ) : (
@@ -99,14 +99,11 @@ export default function GalleryPreview() {
                             </div>
                           )}
                         </div>
-                        <div className="p-4">
-                          <h3 className="font-heading font-bold text-foreground line-clamp-1 text-sm">
-                            {item.title}
-                          </h3>
-                          {item.category && (
-                            <p className="text-xs text-muted-foreground mt-1">{item.category}</p>
-                          )}
-                        </div>
+                        {item.category && (
+                          <div className="p-3">
+                            <p className="text-xs text-muted-foreground">{item.category}</p>
+                          </div>
+                        )}
                       </motion.div>
                     </CarouselItem>
                   );
