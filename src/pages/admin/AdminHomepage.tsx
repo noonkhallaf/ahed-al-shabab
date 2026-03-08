@@ -5,23 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
-import { Save } from 'lucide-react';
+import { Save, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
-const STORAGE_KEY = 'admin_homepage';
+const SETTINGS_KEYS = [
+  'heroTitle', 'heroSubtitle', 'duraText', 'campaignVideo',
+  'contactPhone', 'contactEmail', 'facebookUrl', 'instagramUrl', 'whatsappNumber',
+];
 
-interface HomepageData {
-  heroTitle: string;
-  heroSubtitle: string;
-  duraText: string;
-  campaignVideo: string;
-  contactPhone: string;
-  contactEmail: string;
-  facebookUrl: string;
-  instagramUrl: string;
-  whatsappNumber: string;
-}
-
-const defaults: HomepageData = {
+const defaults: Record<string, string> = {
   heroTitle: 'قائمة عهد الشباب – معًا نحو مستقبل أفضل',
   heroSubtitle: 'نحن شباب مدينة دورا، نحمل رؤية جديدة ونسعى لخدمة مجتمعنا بإخلاص وتفانٍ',
   duraText: 'مدينة دورا، بتاريخها العريق وأهلها الكرام، كانت دائمًا نموذجًا للعطاء والعمل المجتمعي.',
@@ -34,26 +26,48 @@ const defaults: HomepageData = {
 };
 
 export default function AdminHomepage() {
-  const [data, setData] = useState<HomepageData>(defaults);
+  const [data, setData] = useState<Record<string, string>>(defaults);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) setData(JSON.parse(stored));
+    const load = async () => {
+      const { data: settings } = await supabase.from('site_settings').select('*');
+      if (settings) {
+        const map = { ...defaults };
+        settings.forEach(s => { if (s.value) map[s.key] = s.value; });
+        setData(map);
+      }
+      setLoading(false);
+    };
+    load();
   }, []);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    setSaving(true);
+    for (const key of SETTINGS_KEYS) {
+      await supabase.from('site_settings').upsert(
+        { key, value: data[key] || '' },
+        { onConflict: 'key' }
+      );
+    }
+    setSaving(false);
     toast({ title: 'تم حفظ التعديلات بنجاح' });
   };
 
-  const update = (key: keyof HomepageData, value: string) => setData(prev => ({ ...prev, [key]: value }));
+  const update = (key: string, value: string) => setData(prev => ({ ...prev, [key]: value }));
+
+  if (loading) return <div className="text-center py-8 text-muted-foreground">جارٍ التحميل...</div>;
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-heading font-bold">إدارة الصفحة الرئيسية</h2>
-        <Button type="submit"><Save className="h-4 w-4 ml-2" />حفظ التعديلات</Button>
+        <Button type="submit" disabled={saving}>
+          {saving ? <Loader2 className="h-4 w-4 ml-2 animate-spin" /> : <Save className="h-4 w-4 ml-2" />}
+          حفظ التعديلات
+        </Button>
       </div>
 
       <Card>

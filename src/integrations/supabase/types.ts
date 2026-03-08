@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      candidates: {
+        Row: {
+          achievements: string[]
+          age: number
+          bio: string
+          created_at: string
+          education: string
+          experience: string[]
+          id: number
+          image_url: string | null
+          location: string
+          name: string
+          quote: string
+          specialty: string
+          updated_at: string
+        }
+        Insert: {
+          achievements?: string[]
+          age: number
+          bio?: string
+          created_at?: string
+          education: string
+          experience?: string[]
+          id?: number
+          image_url?: string | null
+          location: string
+          name: string
+          quote?: string
+          specialty: string
+          updated_at?: string
+        }
+        Update: {
+          achievements?: string[]
+          age?: number
+          bio?: string
+          created_at?: string
+          education?: string
+          experience?: string[]
+          id?: number
+          image_url?: string | null
+          location?: string
+          name?: string
+          quote?: string
+          specialty?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           created_at: string

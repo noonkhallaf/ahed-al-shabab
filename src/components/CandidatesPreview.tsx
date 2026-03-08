@@ -1,11 +1,15 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { candidatesData } from "@/data/candidates";
 import { User } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { useCandidates } from "@/hooks/useCandidates";
 
 export default function CandidatesPreview() {
+  const { data: candidates = [], isLoading } = useCandidates();
+
+  if (isLoading) return null;
+
   return (
     <section className="py-20 bg-background">
       <div className="container">
@@ -20,7 +24,7 @@ export default function CandidatesPreview() {
           </h2>
           <div className="w-20 h-1 bg-secondary mx-auto mt-4 rounded-full" />
           <p className="text-muted-foreground mt-4 max-w-xl mx-auto">
-            فريق من 13 شابًا وشابة يمثلون صوت الجيل الجديد
+            فريق من {candidates.length} شابًا وشابة يمثلون صوت الجيل الجديد
           </p>
         </motion.div>
 
@@ -30,7 +34,7 @@ export default function CandidatesPreview() {
           className="w-full"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
-            {candidatesData.map((c, i) => (
+            {candidates.map((c, i) => (
               <CarouselItem key={c.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                 <motion.div
                   className="glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300 h-full"
@@ -39,8 +43,12 @@ export default function CandidatesPreview() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <div className="h-48 bg-muted flex items-center justify-center">
-                    <User className="text-muted-foreground" size={64} />
+                  <div className="h-48 bg-muted flex items-center justify-center overflow-hidden">
+                    {c.image_url ? (
+                      <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="text-muted-foreground" size={64} />
+                    )}
                   </div>
                   <div className="p-5">
                     <h3 className="font-heading font-bold text-lg text-foreground">{c.name}</h3>
@@ -63,7 +71,7 @@ export default function CandidatesPreview() {
             to="/candidates"
             className="inline-block px-8 py-3 rounded-lg bg-primary text-primary-foreground font-heading font-bold hover:brightness-110 transition-all shadow-md"
           >
-            عرض جميع المرشحين (13)
+            عرض جميع المرشحين ({candidates.length})
           </Link>
         </div>
       </div>
