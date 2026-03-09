@@ -225,8 +225,8 @@ export default function SupportCardPage() {
               {/* "أنا أدعم" text */}
               <div style={{ textAlign: "center", padding: "16px 24px 8px", position: "relative", zIndex: 1 }}>
                 <span style={{
-                  color: "hsl(40, 85%, 55%)", fontSize: 15, fontWeight: 700,
-                  letterSpacing: 2,
+                  color: "hsl(40, 85%, 55%)", fontSize: 16, fontWeight: 700,
+                  letterSpacing: 0, wordSpacing: 4,
                 }}>
                   ✦ أنا أدعم ✦
                 </span>
