@@ -57,14 +57,16 @@ export default function AdminCandidates() {
     if (editing) {
       const { error } = await supabase.from('candidates').update(item).eq('id', editing.id);
       if (error) { toast({ title: 'فشل التعديل', variant: 'destructive' }); return; }
-      toast({ title: 'تم تعديل المرشح بنجاح' });
+      toast({ title: imageUrl ? 'تم تعديل المرشح وحفظ الصورة بنجاح ✓' : 'تم تعديل المرشح بنجاح' });
     } else {
       const { error } = await supabase.from('candidates').insert(item);
       if (error) { toast({ title: 'فشل الإضافة', variant: 'destructive' }); return; }
-      toast({ title: 'تم إضافة المرشح بنجاح' });
+      toast({ title: imageUrl ? 'تم إضافة المرشح وحفظ الصورة بنجاح ✓' : 'تم إضافة المرشح بنجاح' });
     }
     queryClient.invalidateQueries({ queryKey: ['candidates'] });
-    setEditing(null); setDialogOpen(false);
+    setHasUnsavedImage(false);
+    setEditing(null); 
+    setDialogOpen(false);
   };
 
   const handleDelete = async (id: number) => {
