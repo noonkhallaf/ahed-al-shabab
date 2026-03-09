@@ -173,7 +173,18 @@ export default function CampaignChat() {
       }
 
       if (!started) {
-        setMessages(prev => [...prev, { role: "assistant", content: "عذراً، لم أتمكن من الرد. حاول مجدداً." }]);
+        const errorMsg: Message = { role: "assistant", content: "عذراً، لم أتمكن من الرد. حاول مجدداً." };
+        setMessages(prev => {
+          const updated = [...prev, errorMsg];
+          saveMessages(updated);
+          return updated;
+        });
+      } else {
+        // Save messages after successful response
+        setMessages(prev => {
+          saveMessages(prev);
+          return prev;
+        });
       }
     } catch (e) {
       console.error(e);

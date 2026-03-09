@@ -77,6 +77,7 @@ function AppContent() {
             <Route path="events" element={<AdminEvents />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="audit" element={<AdminAuditLog />} />
+            <Route path="chat-analytics" element={<AdminChatAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 
