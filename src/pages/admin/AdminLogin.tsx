@@ -6,7 +6,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, User } from 'lucide-react';
+import { toast } from 'sonner';
 import logo from '@/assets/logo.png';
+
+const motivationalMessages = [
+  "مرحباً بعودتك! 💪 معاً نصنع التغيير",
+  "أهلاً بك قائدنا! 🌟 عملك يصنع الفرق",
+  "مرحباً! 🚀 كل جهد تبذله يقرّبنا من النجاح",
+  "أهلاً وسهلاً! ✨ طاقتك تلهم الفريق بأكمله",
+  "مرحباً بالبطل! 🏆 استمر فالنصر قريب",
+  "أهلاً بك! 🔥 حماسك هو وقود نجاحنا",
+  "مرحباً! 💎 أنت ركيزة أساسية في هذا المشروع",
+  "أهلاً بعودتك! 🌱 كل يوم نزرع بذرة نجاح جديدة",
+];
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
@@ -19,6 +31,8 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     if (login(username, password)) {
+      const msg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+      toast.success(msg, { duration: 5000 });
       navigate('/admin');
     } else {
       setError('اسم المستخدم أو كلمة المرور غير صحيحة');
