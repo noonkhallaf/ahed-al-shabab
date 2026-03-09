@@ -19,6 +19,7 @@ export default function AdminCandidates() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [hasUnsavedImage, setHasUnsavedImage] = useState(false);
   const imgRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
