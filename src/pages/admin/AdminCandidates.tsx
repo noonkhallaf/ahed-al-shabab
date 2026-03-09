@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useCandidates, type Candidate } from '@/hooks/useCandidates';
 import { useQueryClient } from '@tanstack/react-query';
 import { logAudit } from '@/lib/audit';
+import CandidateShareCard from '@/components/CandidateShareCard';
 
 export default function AdminCandidates() {
   const { data: candidates = [], isLoading } = useCandidates();
