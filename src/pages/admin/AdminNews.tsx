@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Plus, Pencil, Trash2, Printer, Upload, Loader2, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { logAudit } from '@/lib/audit';
 
 interface NewsItem { id: string; title: string; content: string; published_at: string; category: string; image_url: string | null; video_url: string | null; }
 

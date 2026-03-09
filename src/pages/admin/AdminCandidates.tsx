@@ -97,6 +97,7 @@ export default function AdminCandidates() {
 
     queryClient.invalidateQueries({ queryKey: ['candidates'] });
     toast({ title: 'تم حذف المرشح بنجاح' });
+    await logAudit('حذف مرشح', `تم حذف المرشح رقم: ${id}`);
   };
 
   const openDialog = (c: Candidate | null) => { 
