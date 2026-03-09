@@ -1,7 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { User, MapPin, GraduationCap, Briefcase, Award, Quote, ArrowRight, Share2 } from "lucide-react";
+import { User, MapPin, GraduationCap, Briefcase, Award, Quote, ArrowRight, Share2, Image } from "lucide-react";
 import { useCandidate } from "@/hooks/useCandidates";
+import CandidateShareCard from "@/components/CandidateShareCard";
+import { Button } from "@/components/ui/button";
 
 export default function CandidateDetailPage() {
   const { id } = useParams();
