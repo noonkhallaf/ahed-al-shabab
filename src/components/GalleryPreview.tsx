@@ -67,7 +67,7 @@ export default function GalleryPreview() {
         ) : (
           <>
             <Carousel
-              opts={{ align: "start", loop: true }}
+              opts={{ align: "start", loop: true, direction: "rtl" }}
               plugins={[Autoplay({ delay: 3000, stopOnInteraction: false })]}
               className="w-full"
             >
