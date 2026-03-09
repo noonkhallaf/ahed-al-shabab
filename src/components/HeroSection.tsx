@@ -9,9 +9,27 @@ export default function HeroSection() {
 
   const title = settings?.heroTitle || "قائمة عهد الشباب";
   const subtitle = settings?.heroSubtitle || "نحن فريق من شباب مدينة دورا الطموح، نسعى لخدمة المجتمع وتحقيق تطلعات أبناء المدينة من خلال العمل الجاد والرؤية الواضحة.";
+  const videoUrl = settings?.campaignVideo;
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center gradient-hero overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Video or Gradient Background */}
+      {videoUrl ? (
+        <>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            src={videoUrl}
+          />
+          <div className="absolute inset-0 bg-primary/80" />
+        </>
+      ) : (
+        <div className="absolute inset-0 gradient-hero" />
+      )}
+
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
