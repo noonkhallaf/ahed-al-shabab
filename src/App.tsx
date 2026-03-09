@@ -16,6 +16,7 @@ import GalleryPage from "./pages/GalleryPage";
 import PollPage from "./pages/PollPage";
 import SuggestionsPage from "./pages/SuggestionsPage";
 import NotFound from "./pages/NotFound";
+import SupportCardPage from "./pages/SupportCardPage";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminLayout from "./pages/admin/AdminLayout";
@@ -62,6 +63,7 @@ function AppContent() {
            <Route path="/gallery" element={<GalleryPage />} />
            <Route path="/poll" element={<PollPage />} />
            <Route path="/suggestions" element={<SuggestionsPage />} />
+           <Route path="/support-card" element={<SupportCardPage />} />
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
