@@ -63,6 +63,7 @@ function AppContent() {
            <Route path="/gallery" element={<GalleryPage />} />
            <Route path="/poll" element={<PollPage />} />
            <Route path="/suggestions" element={<SuggestionsPage />} />
+           <Route path="/support-card" element={<SupportCardPage />} />
 
           {/* Admin routes */}
           <Route path="/admin/login" element={<AdminLogin />} />

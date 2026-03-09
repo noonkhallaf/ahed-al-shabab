@@ -11,6 +11,7 @@ const navLinks = [
   { label: "المعرض", href: "/gallery" },
   { label: "استطلاع الرأي", href: "/poll" },
   { label: "اقتراحات", href: "/suggestions" },
+  { label: "بطاقة دعم", href: "/support-card" },
 ];
 
 export default function Navbar() {
