@@ -19,7 +19,6 @@ const motivationalMessages = [
   "مرحباً! 💎 أنت ركيزة أساسية في هذا المشروع",
   "أهلاً بعودتك! 🌱 كل يوم نزرع بذرة نجاح جديدة",
 ];
-import logo from '@/assets/logo.png';
 
 export default function AdminLogin() {
   const [username, setUsername] = useState('');
