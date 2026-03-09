@@ -6,12 +6,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Pencil, Trash2, UserCircle, Upload, Loader2, Printer } from 'lucide-react';
+import { Plus, Pencil, Trash2, UserCircle, Upload, Loader2, Printer, Image } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useCandidates, type Candidate } from '@/hooks/useCandidates';
 import { useQueryClient } from '@tanstack/react-query';
 import { logAudit } from '@/lib/audit';
+import CandidateShareCard from '@/components/CandidateShareCard';
 
 export default function AdminCandidates() {
   const { data: candidates = [], isLoading } = useCandidates();
@@ -166,6 +167,10 @@ export default function AdminCandidates() {
                     <TableCell>{c.education}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <CandidateShareCard
+                          candidate={c}
+                          trigger={<Button variant="ghost" size="icon" title="مشاركة بطاقة"><Image className="h-4 w-4 text-secondary" /></Button>}
+                        />
                         <Button variant="ghost" size="icon" onClick={() => openDialog(c)}><Pencil className="h-4 w-4" /></Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(c.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                       </div>

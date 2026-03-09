@@ -36,6 +36,7 @@ import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import AdminChatAnalytics from "./pages/admin/AdminChatAnalytics";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import CampaignChat from "@/components/CampaignChat";
+import WelcomePopup from "@/components/WelcomePopup";
 
 
 const queryClient = new QueryClient();
@@ -87,6 +88,7 @@ function AppContent() {
       </main>
       {!isAdmin && <Footer />}
       {!isAdmin && <CampaignChat />}
+      {!isAdmin && <WelcomePopup />}
       
     </>
   );
