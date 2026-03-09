@@ -29,7 +29,7 @@ export default function CandidatesPreview() {
         </motion.div>
 
         <Carousel
-          opts={{ align: "start", loop: true }}
+          opts={{ align: "start", loop: true, direction: "rtl" }}
           plugins={[Autoplay({ delay: 4000, stopOnInteraction: false })]}
           className="w-full"
         >
