@@ -20,7 +20,7 @@ export default function WelcomePopup() {
 
   const dismiss = () => {
     setShow(false);
-    localStorage.setItem(STORAGE_KEY, "1");
+    sessionStorage.setItem(STORAGE_KEY, "1");
   };
 
   return (
