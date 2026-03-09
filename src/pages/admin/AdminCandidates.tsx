@@ -70,11 +70,30 @@ export default function AdminCandidates() {
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('حذف؟')) return;
-    const { error } = await supabase.from('candidates').delete().eq('id', id);
-    if (error) { toast({ title: 'فشل الحذف', variant: 'destructive' }); return; }
+    if (!confirm('هل أنت متأكد من حذف المرشح؟')) return;
+
+    const { data, error } = await supabase
+      .from('candidates')
+      .delete()
+      .eq('id', id)
+      .select('id');
+
+    if (error) {
+      console.error('Failed to delete candidate', { id, error });
+      toast({ title: 'فشل الحذف', description: error.message, variant: 'destructive' });
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      toast({
+        title: 'لم يتم حذف المرشح',
+        description: 'لم يتم العثور على السجل أو لا توجد صلاحيات للحذف.',
+      });
+      return;
+    }
+
     queryClient.invalidateQueries({ queryKey: ['candidates'] });
-    toast({ title: 'تم الحذف' });
+    toast({ title: 'تم حذف المرشح بنجاح' });
   };
 
   const openDialog = (c: Candidate | null) => { 
