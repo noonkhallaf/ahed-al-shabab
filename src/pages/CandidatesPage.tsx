@@ -27,12 +27,14 @@ export default function CandidatesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
               >
-                <div className="h-48 bg-muted flex items-center justify-center overflow-hidden">
-                  {c.image_url ? (
-                    <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <User className="text-muted-foreground" size={64} />
-                  )}
+                <div className="h-48 flex items-center justify-center p-4">
+                  <div className="w-32 h-32 rounded-full border-4 border-secondary shadow-lg overflow-hidden flex items-center justify-center bg-muted">
+                    {c.image_url ? (
+                      <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="text-muted-foreground" size={48} />
+                    )}
+                  </div>
                 </div>
                 <div className="p-5">
                   <h3 className="font-heading font-bold text-lg text-foreground">{c.name}</h3>
