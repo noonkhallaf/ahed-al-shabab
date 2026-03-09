@@ -19,6 +19,7 @@ export default function AdminCandidates() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [hasUnsavedImage, setHasUnsavedImage] = useState(false);
   const imgRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,8 +33,9 @@ export default function AdminCandidates() {
     if (error) { toast({ title: 'فشل رفع الصورة', variant: 'destructive' }); setUploading(false); return; }
     const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
     setImageUrl(publicUrl);
+    setHasUnsavedImage(true);
     setUploading(false);
-    toast({ title: 'تم رفع الصورة' });
+    toast({ title: 'تم رفع الصورة بنجاح - لا تنسَ الضغط على "حفظ"' });
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -55,14 +57,16 @@ export default function AdminCandidates() {
     if (editing) {
       const { error } = await supabase.from('candidates').update(item).eq('id', editing.id);
       if (error) { toast({ title: 'فشل التعديل', variant: 'destructive' }); return; }
-      toast({ title: 'تم تعديل المرشح بنجاح' });
+      toast({ title: imageUrl ? 'تم تعديل المرشح وحفظ الصورة بنجاح ✓' : 'تم تعديل المرشح بنجاح' });
     } else {
       const { error } = await supabase.from('candidates').insert(item);
       if (error) { toast({ title: 'فشل الإضافة', variant: 'destructive' }); return; }
-      toast({ title: 'تم إضافة المرشح بنجاح' });
+      toast({ title: imageUrl ? 'تم إضافة المرشح وحفظ الصورة بنجاح ✓' : 'تم إضافة المرشح بنجاح' });
     }
     queryClient.invalidateQueries({ queryKey: ['candidates'] });
-    setEditing(null); setDialogOpen(false);
+    setHasUnsavedImage(false);
+    setEditing(null); 
+    setDialogOpen(false);
   };
 
   const handleDelete = async (id: number) => {
@@ -73,7 +77,25 @@ export default function AdminCandidates() {
     toast({ title: 'تم الحذف' });
   };
 
-  const openDialog = (c: Candidate | null) => { setEditing(c); setImageUrl(c?.image_url || ''); setDialogOpen(true); };
+  const openDialog = (c: Candidate | null) => { 
+    setEditing(c); 
+    setImageUrl(c?.image_url || ''); 
+    setHasUnsavedImage(false);
+    setDialogOpen(true); 
+  };
+
+  const handleDialogChange = (open: boolean) => {
+    if (!open && hasUnsavedImage) {
+      if (!confirm('لديك صورة لم تُحفظ بعد. هل تريد الإغلاق بدون حفظ؟')) {
+        return;
+      }
+    }
+    setDialogOpen(open);
+    if (!open) {
+      setHasUnsavedImage(false);
+      setImageUrl('');
+    }
+  };
 
   const handlePrint = () => {
     const printContent = `<html dir="rtl"><head><title>تقرير المرشحين</title>
@@ -133,7 +155,7 @@ export default function AdminCandidates() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
           <DialogHeader><DialogTitle>{editing ? 'تعديل مرشح' : 'إضافة مرشح جديد'}</DialogTitle></DialogHeader>
           <form onSubmit={handleSave} className="space-y-4">
@@ -145,6 +167,11 @@ export default function AdminCandidates() {
                 {uploading ? <Loader2 className="h-4 w-4 ml-2 animate-spin" /> : <Upload className="h-4 w-4 ml-2" />}
                 {uploading ? 'جارٍ الرفع...' : 'رفع صورة المرشح'}
               </Button>
+              {hasUnsavedImage && (
+                <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-sm text-amber-800">
+                  ⚠️ تم رفع صورة جديدة - لا تنسَ الضغط على "حفظ التعديلات" لحفظ الصورة نهائياً
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2"><Label>الاسم الكامل</Label><Input name="name" defaultValue={editing?.name} required /></div>
@@ -158,8 +185,11 @@ export default function AdminCandidates() {
             <div className="space-y-2"><Label>نبذة شخصية</Label><Textarea name="bio" rows={3} defaultValue={editing?.bio} /></div>
             <div className="space-y-2"><Label>اقتباس شخصي</Label><Input name="quote" defaultValue={editing?.quote} /></div>
             <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>إلغاء</Button>
-              <Button type="submit">{editing ? 'حفظ التعديلات' : 'إضافة المرشح'}</Button>
+              <Button type="button" variant="outline" onClick={() => handleDialogChange(false)}>إلغاء</Button>
+              <Button type="submit" className={hasUnsavedImage ? 'animate-pulse' : ''}>
+                {editing ? 'حفظ التعديلات' : 'إضافة المرشح'}
+                {hasUnsavedImage && ' 💾'}
+              </Button>
             </div>
           </form>
         </DialogContent>
