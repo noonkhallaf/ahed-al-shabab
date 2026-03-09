@@ -185,8 +185,11 @@ export default function AdminCandidates() {
             <div className="space-y-2"><Label>نبذة شخصية</Label><Textarea name="bio" rows={3} defaultValue={editing?.bio} /></div>
             <div className="space-y-2"><Label>اقتباس شخصي</Label><Input name="quote" defaultValue={editing?.quote} /></div>
             <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>إلغاء</Button>
-              <Button type="submit">{editing ? 'حفظ التعديلات' : 'إضافة المرشح'}</Button>
+              <Button type="button" variant="outline" onClick={() => handleDialogChange(false)}>إلغاء</Button>
+              <Button type="submit" className={hasUnsavedImage ? 'animate-pulse' : ''}>
+                {editing ? 'حفظ التعديلات' : 'إضافة المرشح'}
+                {hasUnsavedImage && ' 💾'}
+              </Button>
             </div>
           </form>
         </DialogContent>
