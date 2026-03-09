@@ -66,7 +66,8 @@ export default function AdminSettings() {
           <p><strong>اسم الموقع:</strong> قائمة عهد الشباب</p>
           <p><strong>الإصدار:</strong> 1.0.0</p>
           <p><strong>نوع الانتخابات:</strong> انتخابات بلدية دورا</p>
-          <p><strong>التقنيات:</strong> React, Tailwind CSS, TypeScript</p>
+          <p><strong>مطور النظام:</strong> نور الدين وائل خلاف</p>
+          <p><strong>تواصل واتساب:</strong> <a href="https://wa.me/972594606294" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">+972594606294</a></p>
         </CardContent>
       </Card>
     </div>
