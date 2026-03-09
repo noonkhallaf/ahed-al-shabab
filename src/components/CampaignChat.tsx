@@ -60,12 +60,12 @@ export default function CampaignChat() {
       if (existing) {
         await supabase
           .from("chat_sessions")
-          .update({ messages: msgs as unknown as Record<string, unknown>[] })
+          .update({ messages: JSON.parse(JSON.stringify(msgs)) })
           .eq("session_id", sessionIdRef.current);
       } else {
         await supabase
           .from("chat_sessions")
-          .insert({ session_id: sessionIdRef.current, messages: msgs as unknown as Record<string, unknown>[] });
+          .insert({ session_id: sessionIdRef.current, messages: JSON.parse(JSON.stringify(msgs)) });
       }
     } catch (e) {
       console.error("Failed to save chat session:", e);

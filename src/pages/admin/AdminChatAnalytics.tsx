@@ -45,7 +45,7 @@ export default function AdminChatAnalytics() {
       // Parse messages from JSON
       const parsed = (data || []).map((s) => ({
         ...s,
-        messages: Array.isArray(s.messages) ? s.messages as Message[] : [],
+        messages: Array.isArray(s.messages) ? (s.messages as unknown as Message[]) : [],
       }));
       
       setSessions(parsed);
