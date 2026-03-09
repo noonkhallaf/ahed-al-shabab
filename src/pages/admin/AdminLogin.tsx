@@ -31,6 +31,8 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     if (login(username, password)) {
+      const msg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+      toast.success(msg, { duration: 5000 });
       navigate('/admin');
     } else {
       setError('اسم المستخدم أو كلمة المرور غير صحيحة');
