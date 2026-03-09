@@ -6,6 +6,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, User } from 'lucide-react';
+import { toast } from 'sonner';
+import logo from '@/assets/logo.png';
+
+const motivationalMessages = [
+  "مرحباً بعودتك! 💪 معاً نصنع التغيير",
+  "أهلاً بك قائدنا! 🌟 عملك يصنع الفرق",
+  "مرحباً! 🚀 كل جهد تبذله يقرّبنا من النجاح",
+  "أهلاً وسهلاً! ✨ طاقتك تلهم الفريق بأكمله",
+  "مرحباً بالبطل! 🏆 استمر فالنصر قريب",
+  "أهلاً بك! 🔥 حماسك هو وقود نجاحنا",
+  "مرحباً! 💎 أنت ركيزة أساسية في هذا المشروع",
+  "أهلاً بعودتك! 🌱 كل يوم نزرع بذرة نجاح جديدة",
+];
 import logo from '@/assets/logo.png';
 
 export default function AdminLogin() {
