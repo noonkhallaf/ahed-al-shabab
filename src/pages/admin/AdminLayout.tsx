@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Users, Newspaper, FileText, Home,
-  Image, Video, BarChart3, MessageSquare, Settings, LogOut, Vote, Calendar, ClipboardList, Shield
+  Image, Video, BarChart3, MessageSquare, Settings, LogOut, Vote, Calendar, ClipboardList, Shield, Bot
 } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
