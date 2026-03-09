@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, Bot, User } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Bot, User, Sparkles, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 interface Message {
   role: "user" | "assistant";
@@ -14,22 +15,36 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/campaign-cha
 const SUGGESTIONS = [
   "من هم مرشحو القائمة؟",
   "ما هو برنامج عهد الشباب؟",
-  "ما رؤية القائمة للتعليم؟",
+  "كيف أشارك باقتراحاتي؟",
   "لماذا أصوّت لعهد الشباب؟",
 ];
 
 export default function CampaignChat() {
   const [open, setOpen] = useState(false);
+  const [showBubble, setShowBubble] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "أهلاً وسهلاً! 👋 أنا **عهد**، مساعدك الذكي لقائمة عهد الشباب في دورا.\n\nيسعدني الإجابة على أي سؤال عن مرشحينا، برنامجنا الانتخابي، أو رؤيتنا لمستقبل مدينتنا. كيف أساعدك؟",
+      content: "أهلاً وسهلاً! 👋 أنا **عَهْد**، مساعدك الذكي لقائمة **عَهْد الشباب** في دورا.\n\nيسعدني الإجابة على أي سؤال عن مرشحينا الـ14، برنامجنا الانتخابي، أو رؤيتنا لمستقبل مدينتنا.\n\n💡 **صوتك مهم!** شاركنا اقتراحاتك لتطوير دورا.",
     },
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Show attention bubble after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!open) setShowBubble(true);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  // Hide bubble when chat opens
+  useEffect(() => {
+    if (open) setShowBubble(false);
+  }, [open]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -126,27 +141,63 @@ export default function CampaignChat() {
     }
   };
 
+  // Check if message mentions suggestions
+  const hasSuggestionLink = (text: string) => {
+    return text.includes("اقتراح") || text.includes("شاركنا") || text.includes("صوتك مهم") || text.includes("اضغط هنا");
+  };
+
   // Simple markdown-like renderer
   const renderContent = (text: string) => {
     return text
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\[اضغط هنا.*?\]/g, "") // Remove the text link since we'll show a button
       .replace(/\n/g, "<br/>");
   };
 
   return (
     <>
-      {/* Floating button */}
-      <motion.button
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center"
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setOpen(true)}
-        style={{ display: open ? "none" : "flex" }}
-        aria-label="افتح المساعد الذكي"
-      >
-        <MessageCircle size={26} />
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-secondary rounded-full animate-pulse" />
-      </motion.button>
+      {/* Floating button with attention grabber */}
+      <div className="fixed bottom-6 left-6 z-50" style={{ display: open ? "none" : "block" }}>
+        {/* Attention bubble */}
+        <AnimatePresence>
+          {showBubble && (
+            <motion.div
+              className="absolute bottom-16 left-0 bg-primary text-primary-foreground rounded-2xl rounded-bl-sm px-4 py-2.5 shadow-lg max-w-[200px]"
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              dir="rtl"
+            >
+              <button
+                onClick={() => setShowBubble(false)}
+                className="absolute -top-2 -right-2 w-5 h-5 bg-background text-foreground rounded-full text-xs flex items-center justify-center shadow-md"
+              >
+                ✕
+              </button>
+              <p className="text-sm font-medium flex items-center gap-1.5">
+                <Sparkles size={14} className="flex-shrink-0" />
+                <span>مرحباً! أنا عَهْد، هل عندك سؤال؟</span>
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          className="w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center relative"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setOpen(true)}
+          aria-label="افتح المساعد الذكي"
+        >
+          <MessageCircle size={26} />
+          {/* Pulsing ring */}
+          <span className="absolute inset-0 rounded-full border-2 border-primary animate-ping opacity-50" />
+          {/* Notification dot */}
+          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary rounded-full flex items-center justify-center">
+            <Sparkles size={10} className="text-secondary-foreground" />
+          </span>
+        </motion.button>
+      </div>
 
       {/* Chat window */}
       <AnimatePresence>
@@ -164,8 +215,8 @@ export default function CampaignChat() {
                 <Bot size={20} />
               </div>
               <div className="flex-1">
-                <p className="font-heading font-bold text-sm">عهد - المساعد الذكي</p>
-                <p className="text-xs opacity-80">قائمة عهد الشباب • دورا</p>
+                <p className="font-heading font-bold text-sm">عَهْد - المساعد الذكي</p>
+                <p className="text-xs opacity-80">قائمة عَهْد الشباب • دورا</p>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -179,23 +230,35 @@ export default function CampaignChat() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3" dir="rtl">
               {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                >
-                  <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
-                    msg.role === "assistant" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
-                  }`}>
-                    {msg.role === "assistant" ? <Bot size={14} /> : <User size={14} />}
+                <div key={i}>
+                  <div className={`flex gap-2 ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
+                      msg.role === "assistant" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+                    }`}>
+                      {msg.role === "assistant" ? <Bot size={14} /> : <User size={14} />}
+                    </div>
+                    <div
+                      className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
+                        msg.role === "user"
+                          ? "bg-primary text-primary-foreground rounded-tr-sm"
+                          : "bg-muted text-foreground rounded-tl-sm"
+                      }`}
+                      dangerouslySetInnerHTML={{ __html: renderContent(msg.content) }}
+                    />
                   </div>
-                  <div
-                    className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm leading-relaxed ${
-                      msg.role === "user"
-                        ? "bg-primary text-primary-foreground rounded-tr-sm"
-                        : "bg-muted text-foreground rounded-tl-sm"
-                    }`}
-                    dangerouslySetInnerHTML={{ __html: renderContent(msg.content) }}
-                  />
+                  {/* Show suggestions button after AI messages that mention it */}
+                  {msg.role === "assistant" && hasSuggestionLink(msg.content) && (
+                    <div className="mr-9 mt-2">
+                      <Link
+                        to="/suggestions"
+                        onClick={() => setOpen(false)}
+                        className="inline-flex items-center gap-1.5 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs font-medium px-3 py-1.5 rounded-full transition-colors"
+                      >
+                        <Lightbulb size={12} />
+                        شارك اقتراحك الآن
+                      </Link>
+                    </div>
+                  )}
                 </div>
               ))}
               {isLoading && (
@@ -250,7 +313,7 @@ export default function CampaignChat() {
                 </Button>
               </div>
               <p className="text-[10px] text-muted-foreground text-center mt-1.5">
-                مساعد عهد الشباب • مدعوم بالذكاء الاصطناعي
+                مساعد عَهْد الشباب • مدعوم بالذكاء الاصطناعي
               </p>
             </div>
           </motion.div>
