@@ -34,6 +34,7 @@ import AdminEvents from "./pages/admin/AdminEvents";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import CampaignChat from "@/components/CampaignChat";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ function AppContent() {
         </Routes>
       </main>
       {!isAdmin && <Footer />}
+      {!isAdmin && <CampaignChat />}
     </>
   );
 }

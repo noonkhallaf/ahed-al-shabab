@@ -1,1 +1,4 @@
 project_id = "zbhtwwqkgiryrkbevere"
+
+[functions.campaign-chat]
+verify_jwt = false
