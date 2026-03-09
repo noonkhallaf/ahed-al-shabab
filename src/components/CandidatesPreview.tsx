@@ -43,17 +43,19 @@ export default function CandidatesPreview() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <div className="h-48 flex items-center justify-center p-4">
-                    <div className="w-32 h-32 rounded-full border-4 border-secondary shadow-lg overflow-hidden flex items-center justify-center bg-muted">
+                  <Link to={`/candidates/${c.id}`} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
+                    <div className="w-32 h-32 rounded-full border-4 border-secondary shadow-lg overflow-hidden flex items-center justify-center bg-muted group-hover:scale-105 transition-transform">
                       {c.image_url ? (
                         <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
                       ) : (
                         <User className="text-muted-foreground" size={48} />
                       )}
                     </div>
-                  </div>
+                  </Link>
                   <div className="p-5">
-                    <h3 className="font-heading font-bold text-lg text-foreground">{c.name}</h3>
+                    <Link to={`/candidates/${c.id}`} className="block">
+                      <h3 className="font-heading font-bold text-lg text-foreground hover:text-secondary transition-colors">{c.name}</h3>
+                    </Link>
                     <p className="text-muted-foreground text-sm mt-1">{c.specialty} • {c.age} سنة</p>
                     <Link
                       to={`/candidates/${c.id}`}
