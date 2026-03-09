@@ -155,7 +155,7 @@ export default function AdminCandidates() {
         </CardContent>
       </Card>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={handleDialogChange}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" dir="rtl">
           <DialogHeader><DialogTitle>{editing ? 'تعديل مرشح' : 'إضافة مرشح جديد'}</DialogTitle></DialogHeader>
           <form onSubmit={handleSave} className="space-y-4">
@@ -167,6 +167,11 @@ export default function AdminCandidates() {
                 {uploading ? <Loader2 className="h-4 w-4 ml-2 animate-spin" /> : <Upload className="h-4 w-4 ml-2" />}
                 {uploading ? 'جارٍ الرفع...' : 'رفع صورة المرشح'}
               </Button>
+              {hasUnsavedImage && (
+                <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-sm text-amber-800">
+                  ⚠️ تم رفع صورة جديدة - لا تنسَ الضغط على "حفظ التعديلات" لحفظ الصورة نهائياً
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2"><Label>الاسم الكامل</Label><Input name="name" defaultValue={editing?.name} required /></div>
