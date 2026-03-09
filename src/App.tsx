@@ -33,6 +33,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAuditLog from "./pages/admin/AdminAuditLog";
+import AdminChatAnalytics from "./pages/admin/AdminChatAnalytics";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import CampaignChat from "@/components/CampaignChat";
 
