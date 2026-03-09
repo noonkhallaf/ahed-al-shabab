@@ -77,7 +77,25 @@ export default function AdminCandidates() {
     toast({ title: 'تم الحذف' });
   };
 
-  const openDialog = (c: Candidate | null) => { setEditing(c); setImageUrl(c?.image_url || ''); setDialogOpen(true); };
+  const openDialog = (c: Candidate | null) => { 
+    setEditing(c); 
+    setImageUrl(c?.image_url || ''); 
+    setHasUnsavedImage(false);
+    setDialogOpen(true); 
+  };
+
+  const handleDialogChange = (open: boolean) => {
+    if (!open && hasUnsavedImage) {
+      if (!confirm('لديك صورة لم تُحفظ بعد. هل تريد الإغلاق بدون حفظ؟')) {
+        return;
+      }
+    }
+    setDialogOpen(open);
+    if (!open) {
+      setHasUnsavedImage(false);
+      setImageUrl('');
+    }
+  };
 
   const handlePrint = () => {
     const printContent = `<html dir="rtl"><head><title>تقرير المرشحين</title>
