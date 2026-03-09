@@ -83,6 +83,7 @@ function AppContent() {
         </Routes>
       </main>
       {!isAdmin && <Footer />}
+      {!isAdmin && <CampaignChat />}
     </>
   );
 }
