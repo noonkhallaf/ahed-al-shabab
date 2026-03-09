@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useCandidates, type Candidate } from '@/hooks/useCandidates';
 import { useQueryClient } from '@tanstack/react-query';
+import { logAudit } from '@/lib/audit';
 
 export default function AdminCandidates() {
   const { data: candidates = [], isLoading } = useCandidates();
