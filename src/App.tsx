@@ -44,6 +44,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       {!isAdmin && <Navbar />}
       <main>
         <Routes>
