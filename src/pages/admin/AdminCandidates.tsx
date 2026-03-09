@@ -33,8 +33,9 @@ export default function AdminCandidates() {
     if (error) { toast({ title: 'فشل رفع الصورة', variant: 'destructive' }); setUploading(false); return; }
     const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(fileName);
     setImageUrl(publicUrl);
+    setHasUnsavedImage(true);
     setUploading(false);
-    toast({ title: 'تم رفع الصورة' });
+    toast({ title: 'تم رفع الصورة بنجاح - لا تنسَ الضغط على "حفظ"' });
   };
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
