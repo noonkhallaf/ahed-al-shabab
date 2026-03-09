@@ -11,7 +11,7 @@ export default function WelcomePopup() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const seen = localStorage.getItem(STORAGE_KEY);
+    const seen = sessionStorage.getItem(STORAGE_KEY);
     if (!seen) {
       const timer = setTimeout(() => setShow(true), 1500);
       return () => clearTimeout(timer);

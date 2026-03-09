@@ -45,8 +45,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/10 mt-8 pt-6 text-center text-xs text-primary-foreground/50">
-          © {new Date().getFullYear()} قائمة عهد الشباب. جميع الحقوق محفوظة.
+        <div className="border-t border-primary-foreground/10 mt-8 pt-6 text-center text-xs text-primary-foreground/50 space-y-2">
+          <p>© {new Date().getFullYear()} قائمة عهد الشباب. جميع الحقوق محفوظة.</p>
+          <p className="flex items-center justify-center gap-2 flex-wrap">
+            <span>تطوير: Noor Edeen Khallaf | 0594606294</span>
+            <a
+              href="https://www.facebook.com/share/1Arvcd99Ce/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-secondary hover:text-secondary/80 transition-colors"
+            >
+              Facebook →
+            </a>
+          </p>
         </div>
       </div>
     </footer>
