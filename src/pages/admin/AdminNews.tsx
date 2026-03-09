@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Plus, Pencil, Trash2, Printer, Upload, Loader2, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { logAudit } from '@/lib/audit';
 
 interface NewsItem { id: string; title: string; content: string; published_at: string; category: string; image_url: string | null; video_url: string | null; }
 
@@ -77,17 +78,22 @@ export default function AdminNews() {
     if (editing) {
       await supabase.from('news').update(item).eq('id', editing.id);
       toast({ title: 'تم تعديل الخبر' });
+      await logAudit('تعديل خبر', `تم تعديل الخبر: ${item.title}`);
     } else {
       await supabase.from('news').insert(item);
       toast({ title: 'تم إضافة الخبر' });
+      await logAudit('إضافة خبر', `تم إضافة الخبر: ${item.title}`);
     }
     setDialogOpen(false); fetchNews();
   };
 
   const handleDelete = async (id: string) => {
+    const newsItem = items.find(n => n.id === id);
     if (confirm('حذف هذا الخبر؟')) {
       await supabase.from('news').delete().eq('id', id);
-      toast({ title: 'تم الحذف' }); fetchNews();
+      toast({ title: 'تم الحذف' });
+      await logAudit('حذف خبر', `تم حذف الخبر: ${newsItem?.title || id}`);
+      fetchNews();
     }
   };
 

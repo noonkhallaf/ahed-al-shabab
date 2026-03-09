@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useCandidates, type Candidate } from '@/hooks/useCandidates';
 import { useQueryClient } from '@tanstack/react-query';
+import { logAudit } from '@/lib/audit';
 
 export default function AdminCandidates() {
   const { data: candidates = [], isLoading } = useCandidates();
@@ -58,10 +59,12 @@ export default function AdminCandidates() {
       const { error } = await supabase.from('candidates').update(item).eq('id', editing.id);
       if (error) { toast({ title: 'فشل التعديل', variant: 'destructive' }); return; }
       toast({ title: imageUrl ? 'تم تعديل المرشح وحفظ الصورة بنجاح ✓' : 'تم تعديل المرشح بنجاح' });
+      await logAudit('تعديل مرشح', `تم تعديل بيانات المرشح: ${item.name}`);
     } else {
       const { error } = await supabase.from('candidates').insert(item);
       if (error) { toast({ title: 'فشل الإضافة', variant: 'destructive' }); return; }
       toast({ title: imageUrl ? 'تم إضافة المرشح وحفظ الصورة بنجاح ✓' : 'تم إضافة المرشح بنجاح' });
+      await logAudit('إضافة مرشح', `تم إضافة المرشح: ${item.name}`);
     }
     queryClient.invalidateQueries({ queryKey: ['candidates'] });
     setHasUnsavedImage(false);
@@ -94,6 +97,7 @@ export default function AdminCandidates() {
 
     queryClient.invalidateQueries({ queryKey: ['candidates'] });
     toast({ title: 'تم حذف المرشح بنجاح' });
+    await logAudit('حذف مرشح', `تم حذف المرشح رقم: ${id}`);
   };
 
   const openDialog = (c: Candidate | null) => { 
