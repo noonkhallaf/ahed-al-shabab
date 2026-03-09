@@ -167,6 +167,10 @@ export default function AdminCandidates() {
                     <TableCell>{c.education}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
+                        <CandidateShareCard
+                          candidate={c}
+                          trigger={<Button variant="ghost" size="icon" title="مشاركة بطاقة"><Image className="h-4 w-4 text-secondary" /></Button>}
+                        />
                         <Button variant="ghost" size="icon" onClick={() => openDialog(c)}><Pencil className="h-4 w-4" /></Button>
                         <Button variant="ghost" size="icon" onClick={() => handleDelete(c.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                       </div>
