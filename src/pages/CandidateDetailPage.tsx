@@ -96,7 +96,16 @@ export default function CandidateDetailPage() {
               <h3 className="font-heading font-bold text-foreground mb-3 flex items-center gap-2">
                 <Share2 size={18} /> شارك هذه الصفحة
               </h3>
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
+                <CandidateShareCard
+                  candidate={candidate}
+                  trigger={
+                    <Button variant="outline" className="gap-2">
+                      <Image size={16} />
+                      مشاركة بطاقة المرشح
+                    </Button>
+                  }
+                />
                 <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-lg bg-[#1877F2] text-primary-foreground text-sm font-medium hover:brightness-110 transition-all">فيسبوك</a>
                 <a href={`https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-lg bg-[#25D366] text-primary-foreground text-sm font-medium hover:brightness-110 transition-all">واتساب</a>
                 <a href={`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`} target="_blank" rel="noopener" className="px-4 py-2 rounded-lg bg-[#0088cc] text-primary-foreground text-sm font-medium hover:brightness-110 transition-all">تيليجرام</a>

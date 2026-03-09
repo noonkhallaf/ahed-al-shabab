@@ -88,6 +88,7 @@ function AppContent() {
       </main>
       {!isAdmin && <Footer />}
       {!isAdmin && <CampaignChat />}
+      {!isAdmin && <WelcomePopup />}
       
     </>
   );
