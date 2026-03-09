@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Loader2, Bot, User, Sparkles, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: "user" | "assistant";
@@ -19,6 +20,16 @@ const SUGGESTIONS = [
   "لماذا أصوّت لعهد الشباب؟",
 ];
 
+// Generate unique session ID
+const getSessionId = () => {
+  let sessionId = sessionStorage.getItem("chat_session_id");
+  if (!sessionId) {
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    sessionStorage.setItem("chat_session_id", sessionId);
+  }
+  return sessionId;
+};
+
 export default function CampaignChat() {
   const [open, setOpen] = useState(false);
   const [showBubble, setShowBubble] = useState(false);
@@ -32,14 +43,52 @@ export default function CampaignChat() {
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const sessionIdRef = useRef(getSessionId());
 
-  // Show attention bubble after 5 seconds
+  // Save messages to database
+  const saveMessages = useCallback(async (msgs: Message[]) => {
+    // Only save if there are user messages
+    if (msgs.filter(m => m.role === "user").length === 0) return;
+    
+    try {
+      const { data: existing } = await supabase
+        .from("chat_sessions")
+        .select("id")
+        .eq("session_id", sessionIdRef.current)
+        .single();
+
+      if (existing) {
+        await supabase
+          .from("chat_sessions")
+          .update({ messages: JSON.parse(JSON.stringify(msgs)) })
+          .eq("session_id", sessionIdRef.current);
+      } else {
+        await supabase
+          .from("chat_sessions")
+          .insert({ session_id: sessionIdRef.current, messages: JSON.parse(JSON.stringify(msgs)) });
+      }
+    } catch (e) {
+      console.error("Failed to save chat session:", e);
+    }
+  }, []);
+
+  // Show attention bubble after 3 seconds, then hide after 3 more seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const showTimer = setTimeout(() => {
       if (!open) setShowBubble(true);
-    }, 5000);
-    return () => clearTimeout(timer);
+    }, 3000);
+    return () => clearTimeout(showTimer);
   }, [open]);
+
+  // Auto-hide bubble after 3 seconds of showing
+  useEffect(() => {
+    if (showBubble) {
+      const hideTimer = setTimeout(() => {
+        setShowBubble(false);
+      }, 3000);
+      return () => clearTimeout(hideTimer);
+    }
+  }, [showBubble]);
 
   // Hide bubble when chat opens
   useEffect(() => {
@@ -124,7 +173,18 @@ export default function CampaignChat() {
       }
 
       if (!started) {
-        setMessages(prev => [...prev, { role: "assistant", content: "عذراً، لم أتمكن من الرد. حاول مجدداً." }]);
+        const errorMsg: Message = { role: "assistant", content: "عذراً، لم أتمكن من الرد. حاول مجدداً." };
+        setMessages(prev => {
+          const updated = [...prev, errorMsg];
+          saveMessages(updated);
+          return updated;
+        });
+      } else {
+        // Save messages after successful response
+        setMessages(prev => {
+          saveMessages(prev);
+          return prev;
+        });
       }
     } catch (e) {
       console.error(e);
