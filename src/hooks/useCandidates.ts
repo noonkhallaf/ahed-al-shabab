@@ -22,6 +22,7 @@ export function useCandidates() {
       const { data, error } = await supabase
         .from("candidates")
         .select("*")
+        .order("promotion_priority", { ascending: false })
         .order("id");
       if (error) throw error;
       return data as Candidate[];

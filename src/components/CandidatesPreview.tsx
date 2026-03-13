@@ -4,6 +4,7 @@ import { User } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useCandidates } from "@/hooks/useCandidates";
+import { trackCandidateClick } from "@/lib/candidate-tracking";
 
 export default function CandidatesPreview() {
   const { data: candidates = [], isLoading } = useCandidates();

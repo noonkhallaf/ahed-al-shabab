@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 import { useCandidates } from "@/hooks/useCandidates";
+import { trackCandidateClick } from "@/lib/candidate-tracking";
 
 export default function CandidatesPage() {
   const { data: candidates = [], isLoading } = useCandidates();

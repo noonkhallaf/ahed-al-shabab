@@ -72,6 +72,20 @@ export default function CampaignChat() {
     }
   }, []);
 
+  // Auto-open chat after 8 seconds on first visit to encourage usage
+  useEffect(() => {
+    const hasSeenAutoOpen = sessionStorage.getItem("chat_auto_opened");
+    if (!hasSeenAutoOpen) {
+      const autoOpenTimer = setTimeout(() => {
+        if (!open) {
+          setOpen(true);
+          sessionStorage.setItem("chat_auto_opened", "true");
+        }
+      }, 8000);
+      return () => clearTimeout(autoOpenTimer);
+    }
+  }, []);
+
   // Show attention bubble after 3 seconds, then hide after 3 more seconds
   useEffect(() => {
     const showTimer = setTimeout(() => {
