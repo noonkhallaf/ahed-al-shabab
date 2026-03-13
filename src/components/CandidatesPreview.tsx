@@ -38,7 +38,7 @@ export default function CandidatesPreview() {
             {candidates.map((c, i) => (
               <CarouselItem key={c.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                 <motion.div
-                  className="glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300 h-full"
+                  className={`glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300 h-full ${(c as any).promotion_priority > 0 ? 'ring-2 ring-secondary shadow-lg' : ''}`}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
