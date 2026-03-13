@@ -44,7 +44,7 @@ export default function CandidatesPreview() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <Link to={`/candidates/${c.id}`} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
+                  <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'preview')} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
                     <div className="w-32 h-32 rounded-full border-4 border-secondary shadow-lg overflow-hidden flex items-center justify-center bg-muted group-hover:scale-105 transition-transform">
                       {c.image_url ? (
                         <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
