@@ -65,6 +65,38 @@ export type Database = {
         }
         Relationships: []
       }
+      candidate_clicks: {
+        Row: {
+          candidate_id: number
+          created_at: string
+          id: string
+          page: string
+          visitor_id: string | null
+        }
+        Insert: {
+          candidate_id: number
+          created_at?: string
+          id?: string
+          page?: string
+          visitor_id?: string | null
+        }
+        Update: {
+          candidate_id?: number
+          created_at?: string
+          id?: string
+          page?: string
+          visitor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "candidate_clicks_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "candidates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       candidates: {
         Row: {
           achievements: string[]
@@ -77,6 +109,7 @@ export type Database = {
           image_url: string | null
           location: string
           name: string
+          promotion_priority: number
           quote: string
           specialty: string
           updated_at: string
@@ -92,6 +125,7 @@ export type Database = {
           image_url?: string | null
           location: string
           name: string
+          promotion_priority?: number
           quote?: string
           specialty: string
           updated_at?: string
@@ -107,6 +141,7 @@ export type Database = {
           image_url?: string | null
           location?: string
           name?: string
+          promotion_priority?: number
           quote?: string
           specialty?: string
           updated_at?: string

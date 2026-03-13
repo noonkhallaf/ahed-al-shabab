@@ -10,7 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   LayoutDashboard, Users, Newspaper, FileText, Home,
-  Image, Video, BarChart3, MessageSquare, Settings, LogOut, Vote, Calendar, ClipboardList, Shield, Bot
+  Image, Video, BarChart3, MessageSquare, Settings, LogOut, Vote, Calendar, ClipboardList, Shield, Bot, TrendingUp
 } from 'lucide-react';
 import logo from '@/assets/logo.png';
 
@@ -26,6 +26,7 @@ const menuItems = [
   { title: 'الفعاليات', url: '/admin/events', icon: Calendar },
   { title: 'الرسائل والاقتراحات', url: '/admin/messages', icon: MessageSquare },
   { title: 'محادثات المساعد', url: '/admin/chat-analytics', icon: Bot },
+  { title: 'تحليل المرشحين', url: '/admin/candidate-analytics', icon: TrendingUp },
   { title: 'الإحصائيات', url: '/admin/stats', icon: BarChart3 },
   { title: 'إدارة المشرفين', url: '/admin/users', icon: Shield },
   { title: 'سجل العمليات', url: '/admin/audit', icon: ClipboardList },

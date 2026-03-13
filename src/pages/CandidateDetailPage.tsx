@@ -4,10 +4,17 @@ import { User, MapPin, GraduationCap, Briefcase, Award, Quote, ArrowRight, Share
 import { useCandidate } from "@/hooks/useCandidates";
 import CandidateShareCard from "@/components/CandidateShareCard";
 import { Button } from "@/components/ui/button";
+import { trackCandidateClick } from "@/lib/candidate-tracking";
+import { useEffect } from "react";
 
 export default function CandidateDetailPage() {
   const { id } = useParams();
   const { data: candidate, isLoading } = useCandidate(Number(id));
+
+  // Track candidate page view
+  useEffect(() => {
+    if (id) trackCandidateClick(Number(id), 'detail');
+  }, [id]);
 
   if (isLoading) {
     return <div className="pt-32 text-center min-h-screen"><p className="text-muted-foreground">جارٍ التحميل...</p></div>;

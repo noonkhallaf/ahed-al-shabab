@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { User } from "lucide-react";
 import { useCandidates } from "@/hooks/useCandidates";
+import { trackCandidateClick } from "@/lib/candidate-tracking";
 
 export default function CandidatesPage() {
   const { data: candidates = [], isLoading } = useCandidates();
@@ -27,7 +28,7 @@ export default function CandidatesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
               >
-                <Link to={`/candidates/${c.id}`} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
+                <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'list')} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
                   <div className="w-32 h-32 rounded-full border-4 border-secondary shadow-lg overflow-hidden flex items-center justify-center bg-muted group-hover:scale-105 transition-transform">
                     {c.image_url ? (
                       <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
@@ -37,7 +38,7 @@ export default function CandidatesPage() {
                   </div>
                 </Link>
                 <div className="p-5">
-                  <Link to={`/candidates/${c.id}`} className="block">
+                  <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'list')} className="block">
                     <h3 className="font-heading font-bold text-lg text-foreground hover:text-secondary transition-colors">{c.name}</h3>
                   </Link>
                   <p className="text-muted-foreground text-sm mt-1">{c.specialty}</p>

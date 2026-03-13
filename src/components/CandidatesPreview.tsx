@@ -4,6 +4,7 @@ import { User } from "lucide-react";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useCandidates } from "@/hooks/useCandidates";
+import { trackCandidateClick } from "@/lib/candidate-tracking";
 
 export default function CandidatesPreview() {
   const { data: candidates = [], isLoading } = useCandidates();
@@ -37,13 +38,13 @@ export default function CandidatesPreview() {
             {candidates.map((c, i) => (
               <CarouselItem key={c.id} className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3">
                 <motion.div
-                  className="glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300 h-full"
+                  className={`glass-card rounded-xl overflow-hidden group hover:shadow-xl transition-all duration-300 h-full ${(c as any).promotion_priority > 0 ? 'ring-2 ring-secondary shadow-lg' : ''}`}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <Link to={`/candidates/${c.id}`} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
+                  <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'preview')} className="block h-48 flex items-center justify-center p-4 cursor-pointer">
                     <div className="w-32 h-32 rounded-full border-4 border-secondary shadow-lg overflow-hidden flex items-center justify-center bg-muted group-hover:scale-105 transition-transform">
                       {c.image_url ? (
                         <img src={c.image_url} alt={c.name} className="w-full h-full object-cover" />
@@ -53,7 +54,7 @@ export default function CandidatesPreview() {
                     </div>
                   </Link>
                   <div className="p-5">
-                    <Link to={`/candidates/${c.id}`} className="block">
+                    <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'preview')} className="block">
                       <h3 className="font-heading font-bold text-lg text-foreground hover:text-secondary transition-colors">{c.name}</h3>
                     </Link>
                     <p className="text-muted-foreground text-sm mt-1">{c.specialty} • {c.age} سنة</p>
