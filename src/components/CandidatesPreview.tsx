@@ -54,7 +54,7 @@ export default function CandidatesPreview() {
                     </div>
                   </Link>
                   <div className="p-5">
-                    <Link to={`/candidates/${c.id}`} className="block">
+                    <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'preview')} className="block">
                       <h3 className="font-heading font-bold text-lg text-foreground hover:text-secondary transition-colors">{c.name}</h3>
                     </Link>
                     <p className="text-muted-foreground text-sm mt-1">{c.specialty} • {c.age} سنة</p>

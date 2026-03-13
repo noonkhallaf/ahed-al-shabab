@@ -83,6 +83,7 @@ function AppContent() {
             <Route path="users" element={<AdminUsers />} />
             <Route path="audit" element={<AdminAuditLog />} />
             <Route path="chat-analytics" element={<AdminChatAnalytics />} />
+            <Route path="candidate-analytics" element={<AdminCandidateAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
 

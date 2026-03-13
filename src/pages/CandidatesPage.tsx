@@ -38,7 +38,7 @@ export default function CandidatesPage() {
                   </div>
                 </Link>
                 <div className="p-5">
-                  <Link to={`/candidates/${c.id}`} className="block">
+                  <Link to={`/candidates/${c.id}`} onClick={() => trackCandidateClick(c.id, 'list')} className="block">
                     <h3 className="font-heading font-bold text-lg text-foreground hover:text-secondary transition-colors">{c.name}</h3>
                   </Link>
                   <p className="text-muted-foreground text-sm mt-1">{c.specialty}</p>
