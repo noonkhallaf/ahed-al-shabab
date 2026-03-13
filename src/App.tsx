@@ -35,6 +35,7 @@ import AdminEvents from "./pages/admin/AdminEvents";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminAuditLog from "./pages/admin/AdminAuditLog";
 import AdminChatAnalytics from "./pages/admin/AdminChatAnalytics";
+import AdminCandidateAnalytics from "./pages/admin/AdminCandidateAnalytics";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import CampaignChat from "@/components/CampaignChat";
 import WelcomePopup from "@/components/WelcomePopup";
